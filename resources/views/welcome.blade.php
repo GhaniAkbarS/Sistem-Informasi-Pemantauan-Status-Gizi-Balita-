@@ -676,7 +676,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Ahmad Rizki</td>
+                            <td>Rojali Marpuut</td>
                             <td>15 Maret 2022</td>
                             <td><span class="badge badge-success">Normal</span></td>
                             <td>
