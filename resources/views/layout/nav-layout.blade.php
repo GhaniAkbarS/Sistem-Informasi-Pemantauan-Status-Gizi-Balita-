@@ -1,7 +1,7 @@
 <nav class="navbar">
     <div class="navbar-container">
         <a href="#" class="navbar-brand">
-            <span class="navbar-brand-icon">🏥</span>
+
             <span>SIP Gizi Balita</span>
         </a>
 
@@ -10,31 +10,31 @@
         <ul class="navbar-menu" id="navbarMenu">
             <li class="navbar-item">
                 <a href="#" class="navbar-link active">
-                    <span class="navbar-link-icon">📊</span>
+
                     Dashboard
                 </a>
             </li>
             <li class="navbar-item">
                 <a href="#" class="navbar-link">
-                    <span class="navbar-link-icon">👶</span>
+
                     Data Balita
                 </a>
             </li>
             <li class="navbar-item">
                 <a href="#" class="navbar-link">
-                    <span class="navbar-link-icon">📋</span>
+
                     Pemeriksaan
                 </a>
             </li>
             <li class="navbar-item">
                 <a href="#" class="navbar-link">
-                    <span class="navbar-link-icon">📄</span>
+
                     Laporan
                 </a>
             </li>
             <li class="navbar-item">
                 <a href="#" class="navbar-link">
-                    <span class="navbar-link-icon">🏥</span>
+
                     Rujukan
                 </a>
             </li>
@@ -42,7 +42,6 @@
 
         <div class="navbar-right">
             <div class="navbar-notification">
-                <span style="font-size: 20px;">🔔</span>
                 <span class="notification-badge">3</span>
             </div>
 

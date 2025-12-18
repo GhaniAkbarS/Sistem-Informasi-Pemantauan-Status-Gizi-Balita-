@@ -47,7 +47,7 @@
             gap: 12px;
             font-size: 20px;
             font-weight: 700;
-            color: #667eea;
+            color: #0891b2;
             text-decoration: none;
             margin-bottom: 30px;
             padding: 0 10px;
@@ -85,13 +85,13 @@
         }
 
         .navbar-link:hover {
-            background: #f3f4f6;
-            color: #667eea;
+            background: #ecfeff;
+            color: #0891b2;
         }
 
         .navbar-link.active {
-            background: #ede9fe;
-            color: #667eea;
+            background: #cffafe;
+            color: #0e7490;
             font-weight: 600;
         }
 
@@ -161,7 +161,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -204,7 +204,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
             color: white;
             padding: 30px 30px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -464,7 +464,7 @@
 
         .action-btn {
             padding: 6px 12px;
-            background: #667eea;
+            background: #0891b2;
             color: white;
             border: none;
             border-radius: 6px;
@@ -474,7 +474,7 @@
         }
 
         .action-btn:hover {
-            background: #5568d3;
+            background: #0e7490;
         }
 
         @media (max-width: 1024px) {
@@ -549,7 +549,7 @@
         <div class="header">
             <div class="header-content">
                 <div>
-                    <h1>📊 Dashboard Posyandu Cendrawasih</h1>
+                    <h1>Dashboard Posyandu Cendrawasih</h1>
                     <p style="font-size: 14px; opacity: 0.9; margin-top: 5px;">RW 03, Kelurahan Sidomulyo Timur</p>
                 </div>
                 <div class="header-info">
@@ -562,7 +562,7 @@
         <div class="container">
             <!-- Alert Notifikasi Stunting -->
             <div class="alert-box">
-                <div class="alert-icon">⚠️</div>
+
                 <div class="alert-content">
                     <h3>Perhatian: Terdeteksi Kasus Berisiko Stunting</h3>
                     <p>3 balita memerlukan perhatian khusus dan rujukan ke Puskesmas Simpang Tiga</p>
@@ -574,7 +574,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Total Balita Terdaftar</span>
-                        <span class="stat-icon">👶</span>
+
                     </div>
                     <div class="stat-value">87</div>
                     <div class="stat-subtitle">Balita aktif per November 2025</div>
@@ -584,7 +584,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Pemeriksaan Bulan Ini</span>
-                        <span class="stat-icon">📋</span>
+
                     </div>
                     <div class="stat-value">62</div>
                     <div class="stat-subtitle">Dari 87 balita (71%)</div>
@@ -594,7 +594,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Status Gizi Normal</span>
-                        <span class="stat-icon">✅</span>
+
                     </div>
                     <div class="stat-value">68</div>
                     <div class="stat-subtitle">78% dari total balita</div>
@@ -604,7 +604,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Perlu Rujukan</span>
-                        <span class="stat-icon">🏥</span>
+
                     </div>
                     <div class="stat-value">3</div>
                     <div class="stat-subtitle">Risiko tinggi stunting</div>
@@ -615,14 +615,14 @@
             <!-- Grafik dan Breakdown -->
             <div class="charts-section">
                 <div class="chart-card">
-                    <h2>📈 Tren Pemeriksaan 6 Bulan Terakhir</h2>
+                    <h2>Tren Pemeriksaan 6 Bulan Terakhir</h2>
                     <div class="chart-placeholder">
                         [Grafik Garis: Jun: 58 | Jul: 61 | Agt: 65 | Sep: 67 | Okt: 63 | Nov: 62]
                     </div>
                 </div>
 
                 <div class="chart-card">
-                    <h2>🎯 Distribusi Status Gizi</h2>
+                    <h2>Distribusi Status Gizi</h2>
                     <div class="status-breakdown">
                         <div class="status-item">
                             <div class="status-color" style="background: #10b981;"></div>
@@ -656,7 +656,7 @@
 
             <!-- Tabel Pemeriksaan Terbaru -->
             <div class="recent-table">
-                <h2>📝 Pemeriksaan Terbaru (7 Hari Terakhir)</h2>
+                <h2>Pemeriksaan Terbaru (7 Hari Terakhir)</h2>
                 <table>
                     <thead>
                         <tr>
