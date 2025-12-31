@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Balita;
 
 class BalitaController extends Controller
 {
@@ -27,9 +28,9 @@ class BalitaController extends Controller
             'berat_badan' => 'required|numeric',
         ]);
 
-        // Karena dummy, kita tidak simpan ke database.
-        // Langsung redirect back dengan success message.
+        // Create data balita
+        Balita::create($request->all());
         
-        return redirect()->route('balita.create')->with('success', 'Data Balita berhasil ditambahkan (Dummy)!');
+        return redirect()->route('balita.create')->with('success', 'Data Balita berhasil ditambahkan!');
     }
 }
