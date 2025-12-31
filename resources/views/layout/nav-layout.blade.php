@@ -15,13 +15,13 @@
                 </a>
             </li>
             <li class="navbar-item">
-                <a href="#" class="navbar-link">
+                <a href="{{ route('balita.create') }}" class="navbar-link">
 
                     Data Balita
                 </a>
             </li>
             <li class="navbar-item">
-                <a href="#" class="navbar-link">
+                <a href="" class="navbar-link">
 
                     Pemeriksaan
                 </a>
