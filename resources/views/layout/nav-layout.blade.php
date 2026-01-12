@@ -15,7 +15,7 @@
                 </a>
             </li>
             <li class="navbar-item">
-                <a href="{{ route('balita.create') }}" class="navbar-link">
+                <a href="{{ route('balita.index') }}" class="navbar-link">
 
                     Data Balita
                 </a>
@@ -48,8 +48,8 @@
             <div class="navbar-user">
                 <div class="user-avatar">SA</div>
                 <div class="user-info">
-                    <div class="user-name">Ibu Siti Aminah</div>
-                    <div class="user-role">Kader Posyandu</div>
+                    <p><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
+                    <p style="opacity: 0.9;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
                 </div>
             </div>
         </div>

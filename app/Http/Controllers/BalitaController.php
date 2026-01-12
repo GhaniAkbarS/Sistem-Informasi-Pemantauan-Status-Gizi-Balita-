@@ -12,8 +12,9 @@ class BalitaController extends Controller
         return view('pages.input.balita.create');
     }
 
-    public function index(): View{
-        
+    public function index(){
+        $balitas = Balita::all();
+        return view('pages.input.balita.index', compact('balitas'));
     }
 
     public function store(Request $request)
