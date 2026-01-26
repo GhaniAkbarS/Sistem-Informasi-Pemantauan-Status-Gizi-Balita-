@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+
+<x-app-layout>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Input Data Balita - Posyandu Cendrawasih</title>
+    @push('after-style')
     <style>
         * {
             margin: 0;
@@ -212,10 +215,10 @@
             }
         }
     </style>
+    @endpush
 </head>
 <body>
     
-    @include('layout.nav-layout')
 
     <div class="main-content">
         <div class="header">
@@ -249,7 +252,8 @@
                         <!-- Umur (Bulan) -->
                         <div class="form-group">
                             <label for="umur" class="form-label">Umur (Bulan)</label>
-                            <input type="number" id="umur" name="umur" class="form-input" placeholder="Contoh: 12" required>
+                            <input type="number" id="umur" name="umur" class="form-input" placeholder="Terisi otomatis" required>
+                            <small style="color: #6b7280; font-size: 12px;">*Dihitung otomatis per hari ini</small>
                         </div>
 
                         <!-- Nama Orang Tua -->
@@ -276,7 +280,41 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tglLahirInput = document.getElementById('tgl_lahir');
+            const umurInput = document.getElementById('umur');
+
+            function hitungUmur() {
+                const nilaiTanggal = tglLahirInput.value;
+                if (!nilaiTanggal) return; // Jangan hitung jika kosong
+
+                const tglLahir = new Date(nilaiTanggal);
+                const today = new Date();
+                
+                if (isNaN(tglLahir.getTime())) return;
+
+                let months = (today.getFullYear() - tglLahir.getFullYear()) * 12;
+                months -= tglLahir.getMonth();
+                months += today.getMonth();
+
+                // Koreksi jika tanggal hari ini belum melewati tanggal lahir di bulan ini
+                if (today.getDate() < tglLahir.getDate()) {
+                    months--;
+                }
+
+                // Pastikan tidak negatif
+                if (months < 0) months = 0;
+
+                umurInput.value = months;
+            }
+
+            // Dengarkan berbagai jenis event agar lebih responsif
+            tglLahirInput.addEventListener('change', hitungUmur);
+            tglLahirInput.addEventListener('input', hitungUmur);
+            tglLahirInput.addEventListener('keyup', hitungUmur);
+        });
+    </script>
 </body>
 </html>
+</x-app-layout>

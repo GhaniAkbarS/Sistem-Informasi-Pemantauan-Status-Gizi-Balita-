@@ -32,6 +32,37 @@ class BalitaController extends Controller
         // Create data balita
         Balita::create($request->all());
         
-        return redirect()->route('balita.create')->with('success', 'Data Balita berhasil ditambahkan!');
+        return redirect()->route('balita.index')->with('success', 'Data Balita berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $balita = Balita::findOrFail($id);
+        return view('pages.input.balita.edit', compact('balita'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'tgl_lahir' => 'required|date',
+            'umur' => 'required|numeric',
+            'nama_ortu' => 'required',
+            'tinggi_badan' => 'required|numeric',
+            'berat_badan' => 'required|numeric',
+        ]);
+
+        $balita = Balita::findOrFail($id);
+        $balita->update($request->all());
+
+        return redirect()->route('balita.index')->with('success', 'Data Balita berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $balita = Balita::findOrFail($id);
+        $balita->delete();
+
+        return redirect()->route('balita.index')->with('success', 'Data Balita berhasil dihapus!');
     }
 }
