@@ -493,36 +493,80 @@
         }
 
         @media (max-width: 1024px) {
-            .charts-section {
-                grid-template-columns: 1fr;
+            body {
+                flex-direction: column;
+            }
+
+            .navbar {
+                width: 100%;
+                height: auto;
+                position: sticky;
+                top: 0;
+                padding: 10px 0;
+                flex-direction: row;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+            .navbar-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .navbar-brand {
+                margin-bottom: 0;
+                font-size: 18px;
+            }
+
+            .navbar-toggle {
+                display: block;
+                font-size: 24px;
+                cursor: pointer;
+                color: #4b5563;
+                order: 1; /* Ensure hamburger is on the right or customized */
             }
 
             .navbar-menu {
                 display: none;
                 position: absolute;
-                top: 70px;
+                top: 100%;
                 left: 0;
                 right: 0;
                 background: white;
                 flex-direction: column;
-                padding: 10px;
+                padding: 15px;
                 box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                border-top: 1px solid #f3f4f6;
+                z-index: 1001;
             }
 
             .navbar-menu.active {
                 display: flex;
             }
 
-            .navbar-toggle {
-                display: block;
-            }
-
             .navbar-right {
-                gap: 10px;
+                display: none; /* Hide user profile on mobile menu for simplicity, or move it inside menu */
+            }
+            
+            /* Show user info inside menu if needed, or keep hidden to save space. 
+               For now, let's keep it clean. */
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                margin-top: 0; /* Navbar is relative/sticky now */
             }
 
-            .user-info {
-                display: none;
+            .container {
+                padding: 20px;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
 

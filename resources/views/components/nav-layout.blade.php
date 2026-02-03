@@ -9,17 +9,17 @@
 
         <ul class="navbar-menu" id="navbarMenu">
             <li class="navbar-item">
-                <a href="{{ route('dashboard.index') }}" class="navbar-link {{ request()->is('dashboard.index') ? 'active' : '' }}">                    Dashboard
+                <a href="{{ route('dashboard.index') }}" class="navbar-link {{ request()->is('dashboard.index') ? 'active' : '' }}">                    
+                    Dashboard
                 </a>
             </li>
             <li class="navbar-item">
                 <a href="{{ route('balita.index') }}" class="navbar-link {{ request()->is('balita.index') ? 'active' : '' }}">
-
                     Data Balita
                 </a>
             </li>
             <li class="navbar-item">
-                <a href="" class="navbar-link">
+                <a href="{{ route('periksa.index') }}" class="navbar-link {{ request()->is('periksa.index') ? 'active' : '' }}">
 
                     Pemeriksaan
                 </a>
