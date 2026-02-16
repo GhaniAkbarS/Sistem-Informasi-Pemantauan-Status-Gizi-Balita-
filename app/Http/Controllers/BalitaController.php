@@ -9,12 +9,12 @@ class BalitaController extends Controller
 {
     public function create()
     {
-        return view('pages.input.balita.create');
+        return view('pages.balita.create');
     }
 
     public function index(){
         $balitas = Balita::all();
-        return view('pages.input.balita.index', compact('balitas'));
+        return view('pages.balita.index', compact('balitas'));
     }
 
     public function store(Request $request)
@@ -38,7 +38,7 @@ class BalitaController extends Controller
     public function edit($id)
     {
         $balita = Balita::findOrFail($id);
-        return view('pages.input.balita.edit', compact('balita'));
+        return view('pages.balita.edit', compact('balita'));
     }
 
     public function update(Request $request, $id)

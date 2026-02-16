@@ -17,203 +17,13 @@
 
     <!-- CSS app layout -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .navbar {
-            width: 260px;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background: #ffffff;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-            z-index: 1000;
-        }
-
-        .navbar-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 0 20px;
-            width: 100%;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 20px;
-            font-weight: 700;
-            color: #0891b2;
-            text-decoration: none;
-            margin-bottom: 30px;
-            padding: 0 10px;
-        }
-
-        .navbar-brand-icon {
-            font-size: 28px;
-        }
-
-        .navbar-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            list-style: none;
-            width: 100%;
-        }
-
-        .navbar-item {
-            position: relative;
-            width: 100%;
-        }
-
-        .navbar-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            color: #4b5563;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: all 0.2s;
-            width: 100%;
-        }
-
-        .navbar-link:hover {
-            background: #ecfeff;
-            color: #0891b2;
-        }
-
-        .navbar-link.active {
-            background: #cffafe;
-            color: #0e7490;
-            font-weight: 600;
-        }
-
-        .navbar-link-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .navbar-right {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-            border-top: 1px solid #f3f4f6;
-            padding-top: 20px;
-            width: 100%;
-        }
-
-        .navbar-notification {
-            position: relative;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .navbar-notification:hover {
-            background: #f3f4f6;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 4px;
-            left: 20px;
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 5px;
-            border-radius: 10px;
-            min-width: 18px;
-            text-align: center;
-        }
-
-        .navbar-user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
-
-        .navbar-user:hover {
-            background: #f3f4f6;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .user-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1f2937;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        .navbar-toggle {
-            display: none;
-        }
-
-        .main-content {
-            flex: 1;
-            margin-left: 260px;
-            width: calc(100% - 260px);
-            display: flex;
-            flex-direction: column;
-        }
+        /* Old layout styles removed to support SB Admin 2 */
+        /*
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { ... }
+        .navbar { ... }
+        .main-content { ... }
+        */
 
         .header {
             background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
@@ -493,71 +303,13 @@
         }
 
         @media (max-width: 1024px) {
-            body {
-                flex-direction: column;
-            }
+            /*
+            body { ... }
+            .navbar { ... }
+            .main-content { ... }
+            */
 
-            .navbar {
-                width: 100%;
-                height: auto;
-                position: sticky;
-                top: 0;
-                padding: 10px 0;
-                flex-direction: row;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-
-            .navbar-container {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .navbar-brand {
-                margin-bottom: 0;
-                font-size: 18px;
-            }
-
-            .navbar-toggle {
-                display: block;
-                font-size: 24px;
-                cursor: pointer;
-                color: #4b5563;
-                order: 1; /* Ensure hamburger is on the right or customized */
-            }
-
-            .navbar-menu {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                flex-direction: column;
-                padding: 15px;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                border-top: 1px solid #f3f4f6;
-                z-index: 1001;
-            }
-
-            .navbar-menu.active {
-                display: flex;
-            }
-
-            .navbar-right {
-                display: none; /* Hide user profile on mobile menu for simplicity, or move it inside menu */
-            }
-            
-            /* Show user info inside menu if needed, or keep hidden to save space. 
-               For now, let's keep it clean. */
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                margin-top: 0; /* Navbar is relative/sticky now */
-            }
-
-            .container {
+             .container {
                 padding: 20px;
             }
 
@@ -579,9 +331,10 @@
                 padding: 20px 15px;
             }
 
-            .navbar-container {
-                padding: 0 15px;
-            }
+            /*
+            .navbar-container { ... }
+            .header ...
+            */
 
             .header {
                 padding: 20px 15px;
@@ -599,3 +352,12 @@
         }
     </style>
 
+    <!-- SB Admin 2-->
+    <!-- Custom fonts for this template-->
+    <link href="{{ asset('sb-admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{ asset('sb-admin/css/sb-admin-2.min.css') }}" rel="stylesheet">

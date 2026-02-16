@@ -1,14 +1,15 @@
     <x-app-layout>
     <div class="main-content">
-        <div class="header">
-            <div class="header-content">
-                <div>
-                    <h1>Dashboard Posyandu Cendrawasih</h1>
-                    <p style="font-size: 14px; opacity: 0.9; margin-top: 5px;">RW 03, Kelurahan Sidomulyo Timur</p>
+        <!-- Basic Card Example -->
+        <div class="card mb-4 bg-primary text-white rounded-0 border-0">
+            <div class="card-body py-5 d-flex justify-content-between align-items-center">
+                <div class="px-3">
+                    <h4 class="m-0 font-weight-bold">Data Pemeriksaan</h4>
+                    <p class="m-0" style="opacity: 0.8;">RW 03, Kelurahan Sidomulyo Timur</p>
                 </div>
-                <div class="header-info">
-                    <p><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
-                    <p style="opacity: 0.9;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
+                <div class="text-right px-3">
+                    <p class="m-0"><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
+                    <p class="m-0" style="opacity: 0.8;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
                 </div>
             </div>
         </div>

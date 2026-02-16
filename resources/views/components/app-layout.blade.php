@@ -7,8 +7,22 @@
     @stack('after-style')
 </head>
 <body>
-    <x-nav-layout></x-nav-layout>
-    {{ $slot }}
+    <div id="wrapper">
+        <x-nav-layout></x-nav-layout>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+                {{ $slot }}
+            </div>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
 
     @stack('before-script')
     @include('includes.script')

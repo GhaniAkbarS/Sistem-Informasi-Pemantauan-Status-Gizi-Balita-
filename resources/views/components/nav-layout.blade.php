@@ -1,55 +1,73 @@
-<nav class="navbar">
-    <div class="navbar-container">
-        <a href="{{ route('dashboard.index') }}" class="navbar-brand {{ request()->is('dashboard.index') ? 'active' : '' }}">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <span>SIP Gizi Balita</span>
-        </a>
-
-        <div class="navbar-toggle" onclick="toggleMenu()">☰</div>
-
-        <ul class="navbar-menu" id="navbarMenu">
-            <li class="navbar-item">
-                <a href="{{ route('dashboard.index') }}" class="navbar-link {{ request()->is('dashboard.index') ? 'active' : '' }}">                    
-                    Dashboard
-                </a>
-            </li>
-            <li class="navbar-item">
-                <a href="{{ route('balita.index') }}" class="navbar-link {{ request()->is('balita.index') ? 'active' : '' }}">
-                    Data Balita
-                </a>
-            </li>
-            <li class="navbar-item">
-                <a href="{{ route('periksa.index') }}" class="navbar-link {{ request()->is('periksa.index') ? 'active' : '' }}">
-
-                    Pemeriksaan
-                </a>
-            </li>
-            <li class="navbar-item">
-                <a href="#" class="navbar-link">
-
-                    Laporan
-                </a>
-            </li>
-            <li class="navbar-item">
-                <a href="#" class="navbar-link">
-
-                    Rujukan
-                </a>
-            </li>
-        </ul>
-
-        <div class="navbar-right">
-            <div class="navbar-notification">
-                <span class="notification-badge">3</span>
-            </div>
-
-            <div class="navbar-user">
-                <div class="user-avatar">US</div>
-                <div class="user-info">
-                    <p><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
-                    <p style="opacity: 0.9;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
-                </div>
-            </div>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard.index') }}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-baby"></i>
         </div>
+        <div class="sidebar-brand-text mx-3">SIP Gizi Balita</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('dashboard.index') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Menu Utama
     </div>
-</nav>
+
+    <!-- Nav Item - Data Balita -->
+    <li class="nav-item {{ request()->routeIs('balita.index') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('balita.index') }}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Data Balita</span></a>
+    </li>
+
+    <!-- Nav Item - Pemeriksaan -->
+    <li class="nav-item {{ request()->routeIs('periksa.index') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('periksa.index') }}">
+            <i class="fas fa-fw fa-stethoscope"></i>
+            <span>Pemeriksaan</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Lainnya
+    </div>
+
+    <!-- Nav Item - Laporan -->
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>Laporan</span></a>
+    </li>
+
+    <!-- Nav Item - Rujukan -->
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-hospital"></i>
+            <span>Rujukan</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>
