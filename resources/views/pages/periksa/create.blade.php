@@ -17,7 +17,7 @@
         <div class="container-xl mt-4">
             <div class="row row-cards">
                 <div class="col-12">
-                    <form class="card" action="" method="post">
+                    <form class="card" action="{{ route('periksa.store') }}" method="post">
                         @csrf
                         <div class="card-header">
                             <h3 class="card-title">Form Data Pemeriksaan</h3>
@@ -31,8 +31,9 @@
                                         <!-- Placeholder select, nanti bisa diisi data dari controller -->
                                         <select class="form-select" name="balita_id">
                                             <option value="">Pilih Nama Anak</option>
-                                            <option value="1">Contoh Anak 1</option> 
-                                            <option value="2">Contoh Anak 2</option>
+                                            @foreach ($balitas as $balita)
+                                                <option value="{{ $balita->id }}">{{ $balita->nama }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -56,13 +57,7 @@
                                         <input type="number" step="0.01" class="form-control" name="tinggi_badan" placeholder="0.00">
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Lingkar Kepala (cm)</label>
-                                        <input type="number" step="0.01" class="form-control" name="lingkar_kepala" placeholder="0.00">
-                                    </div>
-                                </div>
-                                
+                                    
                                 <!-- Baris 3: Catatan -->
                                 <div class="col-md-12">
                                     <div class="mb-3">

@@ -9,12 +9,19 @@ class Periksa extends Model
     protected $table = 'sp_periksa';
 
     protected $fillable = [
-        'id_balita',
-        'tgl_periksa',
-        'umur',
-        'tinggi_badan',
+        'balita_id',
+        'tgl_lahir',
+        'umur_bulan',
+        'nama_ortu',
+        'tanggal_periksa',
         'berat_badan',
-        'imt',
+        'tinggi_badan',
+        'jenis_pengukuran',
         'status_gizi',
     ];
+
+    public function balita()
+    {
+        return $this->belongsTo(Balita::class, 'balita_id');
+    }
 }

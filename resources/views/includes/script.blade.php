@@ -632,3 +632,33 @@
     <!-- Page level custom scripts -->
     <script src="{{ asset('sb-admin/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('sb-admin/js/demo/chart-pie-demo.js') }}"></script>
+
+    <!-- Custom Sidebar Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const navbar = document.querySelector('.navbar-vertical');
+            
+            if (toggleBtn && navbar) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Toggle Class on Navbar
+                    navbar.classList.toggle('toggled');
+                    
+                    // Toggle Class on Body (for content margin adjustment)
+                    document.body.classList.toggle('sidebar-toggled');
+                    
+                    // Toggle Icon Direction
+                     const icon = toggleBtn.querySelector('svg');
+                     if(navbar.classList.contains('toggled')) {
+                        // Change to Chevron Right if toggled
+                        icon.innerHTML = '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" />';
+                     } else {
+                        // Back to Chevron Left
+                        icon.innerHTML = '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" />';
+                     }
+                });
+            }
+        });
+    </script>

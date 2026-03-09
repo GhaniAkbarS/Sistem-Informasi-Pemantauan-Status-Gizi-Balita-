@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BalitaController;
 use App\Http\Controllers\PeriksaController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     if (!session()->has('user')) {
@@ -29,3 +30,10 @@ Route::delete('/balita/{id}', [BalitaController::class, 'destroy'])->name('balit
 
 Route::get('/periksa', [PeriksaController::class, 'index'])->name('periksa.index');
 Route::get('/periksa/create', [PeriksaController::class, 'create'])->name('periksa.create');
+Route::post('/periksa/store', [PeriksaController::class, 'store'])->name('periksa.store');
+Route::get('/periksa/{id}/edit', [PeriksaController::class, 'edit'])->name('periksa.edit');
+Route::put('/periksa/{id}', [PeriksaController::class, 'update'])->name('periksa.update');
+Route::delete('/periksa/{id}', [PeriksaController::class, 'destroy'])->name('periksa.destroy');
+
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');

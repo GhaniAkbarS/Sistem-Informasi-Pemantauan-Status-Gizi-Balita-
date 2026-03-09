@@ -5,7 +5,7 @@
         <div class="card mb-4 bg-primary text-white rounded-0 border-0">
             <div class="card-body py-5 d-flex justify-content-between align-items-center">
                 <div class="px-3">
-                    <h4 class="m-0 font-weight-bold">Data Pemeriksaan</h4>
+                    <h4 class="m-0 font-weight-bold">Data Balita</h4>
                     <p class="m-0" style="opacity: 0.8;">RW 03, Kelurahan Sidomulyo Timur</p>
                 </div>
                 <div class="text-right px-3">

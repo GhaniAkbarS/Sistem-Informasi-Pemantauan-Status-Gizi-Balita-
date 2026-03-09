@@ -38,36 +38,51 @@
                         <table class="table card-table table-vcenter text-nowrap datatable">
                             <thead>
                                 <tr>
-                                    <th class="w-1">No</th>
+                                    <th class="w-1">No. <!-- Download SVG icon from http://tabler-icons.io/i/chevron-up -->
+                                    </th>
                                     <th>Nama Anak</th>
                                     <th>Umur</th>
                                     <th>BB (kg)</th>
                                     <th>TB (cm)</th>
                                     <th>IMT</th>
                                     <th>Status Gizi</th>
-                                    <th>Aksi</th>
+                                    <th> Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($periksas as $index => $periksa)
                                 <tr>
                                     <td><span class="text-secondary">{{ $index + 1 }}</span></td>
-                                    <td>{{ $periksa->nama }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($periksa->tgl_lahir)->format('d/m/Y') }}</td>
-                                    <td>{{ $periksa->umur }}</td>
-                                    <td>{{ $balita->nama_ortu }}</td>
-                                    <td>{{ $balita->berat_badan }}</td>
-                                    <td>{{ $balita->tinggi_badan }}</td>
+                                    <td><a href="#" class="text-reset" tabindex="-1">{{ $periksa->balita->nama ?? '-' }}</a></td>
                                     <td>
-                                        <div class="dropdown">
+                                        {{ $periksa->umur_bulan }} Bulan
+                                    </td>
+                                    <td>
+                                        {{ $periksa->berat_badan }}
+                                    </td>
+                                    <td>
+                                        {{ $periksa->tinggi_badan }}
+                                    </td>
+                                    <td>
+                                        @php
+                                            $tb_m = $periksa->tinggi_badan / 100;
+                                            $imt = $tb_m > 0 ? $periksa->berat_badan / ($tb_m * $tb_m) : 0;
+                                        @endphp
+                                        {{ number_format($imt, 1) }}
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ $periksa->status_gizi == 'Gizi Normal' ? 'bg-success' : ($periksa->status_gizi == 'Stunting' ? 'bg-danger' : 'bg-warning') }} me-1"></span> {{ $periksa->status_gizi }}
+                                    </td>
+                                    <td class="text-end">
+                                         <div class="dropdown">
                                             <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
                                                 Aksi
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="{{ route('balita.edit', $balita->id) }}">
+                                                <a class="dropdown-item" href="{{ route('periksa.edit', $periksa->id) }}">
                                                     Edit
                                                 </a>
-                                                <form action="{{ route('balita.destroy', $balita->id) }}" method="POST">
+                                                <form action="{{ route('periksa.destroy', $periksa->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE') <!-- @method('DELETE') harus diluar button delete -->
                                                     <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
@@ -80,7 +95,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="text-center p-4 text-muted">
+                                    <td colspan="9" class="text-center p-4 text-muted">
                                         Belum ada data pemeriksaan. Silakan tambah data baru.
                                     </td>
                                 </tr>
