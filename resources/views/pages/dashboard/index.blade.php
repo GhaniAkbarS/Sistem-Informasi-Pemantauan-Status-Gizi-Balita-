@@ -7,10 +7,7 @@
                     <h4 class="m-0 font-weight-bold">Data Pemeriksaan</h4>
                     <p class="m-0" style="opacity: 0.8;">RW 03, Kelurahan Sidomulyo Timur</p>
                 </div>
-                <div class="text-right px-3">
-                    <p class="m-0"><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
-                    <p class="m-0" style="opacity: 0.8;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
-                </div>
+
             </div>
         </div>
 
@@ -24,56 +21,51 @@
                 </div>
             </div>
 
-            <!-- Statistik Utama -->
+            <!-- PERUBAHAN: Menampilkan angka yang benar-benar berasal dari database (dinamis) -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Total Balita Terdaftar</span>
-
                     </div>
-                    <div class="stat-value">{{$totalBalita}}</div>
-                    <div class="stat-subtitle">Balita aktif per November 2025</div>
-                    <span class="stat-trend trend-up">↑ +5 bulan ini</span>
+                    <div class="stat-value">{{ $totalBalita }}</div>
+                    <div class="stat-subtitle">Total balita aktif di sistem</div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Pemeriksaan Bulan Ini</span>
-
                     </div>
-                    <div class="stat-value">62</div>
-                    <div class="stat-subtitle">Dari 87 balita (71%)</div>
-                    <span class="stat-trend trend-down">↓ -8% vs bulan lalu</span>
+                    <div class="stat-value">{{ $pemeriksaanBulanIni }}</div>
+                    <div class="stat-subtitle">Diperiksa pada bulan ini</div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Status Gizi Normal</span>
-
                     </div>
-                    <div class="stat-value">68</div>
-                    <div class="stat-subtitle">78% dari total balita</div>
-                    <span class="stat-trend trend-up">↑ +2% vs bulan lalu</span>
+                    <div class="stat-value">{{ $giziNormal }}</div>
+                    <div class="stat-subtitle">Berdasarkan riwayat periksa</div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-header">
                         <span class="stat-title">Perlu Rujukan</span>
-
                     </div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-subtitle">Risiko tinggi stunting</div>
-                    <span class="stat-trend trend-down" style="background: #d1fae5; color: #065f46;">↓ -1 dari bulan lalu</span>
+                    <div class="stat-value">{{ $perluRujukan }}</div>
+                    <div class="stat-subtitle">Stunting / Sangat Pendek</div>
                 </div>
             </div>
+            <!-- AKHIR PERUBAHAN -->
 
             <!-- Grafik dan Breakdown -->
             <div class="charts-section">
                 <div class="chart-card">
                     <h2>Tren Pemeriksaan 6 Bulan Terakhir</h2>
-                    <div class="chart-placeholder">
-                        [Grafik Garis: Jun: 58 | Jul: 61 | Agt: 65 | Sep: 67 | Okt: 63 | Nov: 62]
+                    <!-- PERUBAHAN: Menghapus placeholder teks dan menggantinya dengan elemen canvas untuk menampilkan grafik Chart.js -->
+                    <div class="chart-area" style="height: 300px;">
+                        <canvas id="myAreaChart"></canvas>
                     </div>
+                    <!-- AKHIR PERUBAHAN -->
                 </div>
 
                 <div class="chart-card">
@@ -139,4 +131,100 @@
             </div>
         </div>
     </div>
+
+<!-- PERUBAHAN: Memindahkan directive push ke dalam komponen x-app-layout agar dikenali oleh Laravel Blade -->
+@push('after-script')
+<script>
+// Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
+
+// Area Chart Example
+var ctx = document.getElementById("myAreaChart");
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ["Jun", "Jul", "Agt", "Sep", "Okt", "Nov"],
+    datasets: [{
+      label: "Total Pemeriksaan",
+      lineTension: 0.3,
+      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      borderColor: "rgba(78, 115, 223, 1)",
+      pointRadius: 3,
+      pointBackgroundColor: "rgba(78, 115, 223, 1)",
+      pointBorderColor: "rgba(78, 115, 223, 1)",
+      pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+      pointHitRadius: 10,
+      pointBorderWidth: 2,
+      data: [58, 61, 65, 67, 63, 62], // Mensuplai data sesuai dengan teks dari placeholder sebelumnya
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 10,
+        right: 25,
+        top: 25,
+        bottom: 0
+      }
+    },
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'date'
+        },
+        gridLines: {
+          display: false,
+          drawBorder: false
+        },
+        ticks: {
+          maxTicksLimit: 7
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          maxTicksLimit: 5,
+          padding: 10,
+        },
+        gridLines: {
+          color: "rgb(234, 236, 244)",
+          zeroLineColor: "rgb(234, 236, 244)",
+          drawBorder: false,
+          borderDash: [2],
+          zeroLineBorderDash: [2]
+        }
+      }],
+    },
+    legend: {
+      display: false
+    },
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      intersect: false,
+      mode: 'index',
+      caretPadding: 10,
+      callbacks: {
+        label: function(tooltipItem, chart) {
+          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+          return datasetLabel + ': ' + tooltipItem.yLabel;
+        }
+      }
+    }
+  }
+});
+</script>
+@endpush
+<!-- AKHIR PERUBAHAN -->
 </x-app-layout>

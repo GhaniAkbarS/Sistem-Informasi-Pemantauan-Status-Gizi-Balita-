@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
@@ -14,19 +17,14 @@ class UserController extends Controller
 
     public function doLogin(Request $request)
     {
-        // Dummy data login
-        $username = $request->input('username');
-        $password = $request->input('password');
+        $credentials = $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
-        // Simple validation
-        if (empty($username) || empty($password)) {
-            return back()->with('error', 'Username dan Password is required');
-        }
-
-        // Dummy check
-        if (($username === 'admin' && $password === 'admin') || ($username === 'user' && $password === 'user')) {
-             $request->session()->put('user', $username);
-             return redirect('/');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/');
         }
         
         return back()->with('error', 'Username atau Password salah');
@@ -39,21 +37,29 @@ class UserController extends Controller
 
     public function doRegister(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'name' => 'required',
-            'username' => 'required',
-            'password' => 'required',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|unique:sp_users,username',
+            'password' => 'required|string|min:4',
             'role' => 'required'
         ]);
 
-        // Karena dummy, kita anggap registrasi selalu berhasil
+        User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
         return redirect('/login')->with('success', 'Registrasi berhasil, silakan login.');
     }
 
     public function logout(Request $request)
     {
-        $request->session()->forget('user');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect('/login');
     }
 }

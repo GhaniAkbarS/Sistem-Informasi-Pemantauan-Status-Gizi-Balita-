@@ -1,17 +1,43 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BalitaController;
 use App\Http\Controllers\PeriksaController;
 use App\Http\Controllers\LaporanController;
 
+// mengambil data asli dari database untuk card statistik dashboard
+use Carbon\Carbon;
+
 Route::get('/', function () {
-    if (!session()->has('user')) {
+    if (!Auth::check()) {
         return redirect('/login');
     }
+    
+    // Ambil parameter bulan dan tahun saat ini
+    $bulanIni = Carbon::now()->month;
+    $tahunIni = Carbon::now()->year;
+
+    // 1. Total Balita
     $totalBalita = \App\Models\Balita::count();
-return view('pages/dashboard/index', compact('totalBalita'));
+    
+    // 2. Pemeriksaan Bulan Ini
+    $pemeriksaanBulanIni = \App\Models\Periksa::whereMonth('tanggal_periksa', $bulanIni)
+                                  ->whereYear('tanggal_periksa', $tahunIni)
+                                  ->count();
+                                  
+    // 3. Status Gizi Normal
+    $giziNormal = \App\Models\Periksa::where('status_gizi', 'Normal')->count();
+    
+    // 4. Perlu Rujukan (Misalkan yang statusnya Sangat Pendek, dll)
+    $perluRujukan = \App\Models\Periksa::whereIn('status_gizi', ['Sangat Pendek', 'Buruk', 'Stunting'])->count();
+
+    return view('pages.dashboard.index', compact(
+        'totalBalita', 
+        'pemeriksaanBulanIni', 
+        'giziNormal', 
+        'perluRujukan'
+    ));
 })->name('dashboard.index');
 
 
