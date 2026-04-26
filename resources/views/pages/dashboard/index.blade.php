@@ -17,7 +17,7 @@
 
                 <div class="alert-content">
                     <h3>Perhatian: Terdeteksi Kasus Berisiko Stunting</h3>
-                    <p>3 balita memerlukan perhatian khusus dan rujukan ke Puskesmas Simpang Tiga</p>
+                    <p>3 balita memerlukan perhatian khusus dan rujukan ke Puskesmas</p>
                 </div>
             </div>
 
@@ -103,7 +103,7 @@
 
             <!-- Tabel Pemeriksaan Terbaru -->
             <div class="recent-table">
-                <h2>Pemeriksaan Terbaru (7 Hari Terakhir)</h2>
+                <h2>Pemeriksaan Terbaru</h2>
                 <table>
                     <thead>
                         <tr>
@@ -117,15 +117,30 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @forelse($recentExaminations as $periksa)
                         <tr>
-                            <td><strong>Ahmad Fauzan</strong></td>
-                            <td>18 bulan</td>
-                            <td>28 Nov 2025</td>
-                            <td>9.2kg / 76cm</td>
-                            <td>-2.8</td>
-                            <td><span class="badge badge-danger">Sangat Pendek</span></td>
-                            <td><button class="action-btn">Rujuk</button></td>
+                            <td><strong>{{ $periksa->balita->nama ?? 'N/A' }}</strong></td>
+                            <td>{{ $periksa->umur_bulan }} bulan</td>
+                            <td>{{ \Carbon\Carbon::parse($periksa->tanggal_periksa)->format('d M Y') }}</td>
+                            <td>{{ $periksa->berat_badan }}kg / {{ $periksa->tinggi_badan }}cm</td>
+                            <td>-</td>
+                            <td>
+                                @php
+                                    $badgeClass = 'badge-secondary';
+                                    if(in_array($periksa->status_gizi, ['Stunting', 'Sangat Pendek'])) $badgeClass = 'badge-danger';
+                                    elseif($periksa->status_gizi == 'Gizi Kurang') $badgeClass = 'badge-warning';
+                                    elseif($periksa->status_gizi == 'Gizi Normal') $badgeClass = 'badge-success';
+                                    elseif($periksa->status_gizi == 'Gizi Lebih') $badgeClass = 'badge-primary';
+                                @endphp
+                                <span class="badge {{ $badgeClass }}">{{ $periksa->status_gizi }}</span>
+                            </td>
+                            <td><a href="{{ route('periksa.edit', $periksa->id) }}" class="action-btn">Detail</a></td>
                         </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center">Belum ada pemeriksaan</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

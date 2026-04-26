@@ -32,11 +32,18 @@ Route::get('/', function () {
     // 4. Perlu Rujukan (Misalkan yang statusnya Sangat Pendek, dll)
     $perluRujukan = \App\Models\Periksa::whereIn('status_gizi', ['Sangat Pendek', 'Buruk', 'Stunting'])->count();
 
+    // 5. Pemeriksaan Terbaru (7 Hari Terakhir)
+    $recentExaminations = \App\Models\Periksa::with('balita')
+                            ->where('tanggal_periksa', '>=', Carbon::now()->subDays(7))
+                            ->orderBy('tanggal_periksa', 'desc')
+                            ->get();
+
     return view('pages.dashboard.index', compact(
         'totalBalita', 
         'pemeriksaanBulanIni', 
         'giziNormal', 
-        'perluRujukan'
+        'perluRujukan',
+        'recentExaminations'
     ));
 })->name('dashboard.index');
 

@@ -74,7 +74,7 @@
 
     <div class="text-center px-3 py-3 mt-auto" style="color: #fff;">
         <p class="m-0" style="font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;">
-            <i class="fas fa-user-circle mr-1"></i> {{ ucfirst(session('user')) }}
+            <i class="fas fa-user-circle mr-1"></i> {{ ucfirst(Auth::user()->name ?? 'User') }}
         </p>
         <p class="m-0" style="font-size: 0.75rem; opacity: 0.75;">
             <i class="fas fa-calendar-alt mr-1"></i> {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
