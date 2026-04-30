@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sp_users', function (Blueprint $table) {
-            //
+            $table->unsignedBigInteger('posyandu_id')->nullable()->after('role');
+            $table->foreign('posyandu_id')->references('id')->on('sp_posyandu')->onDelete('set null');
         });
     }
 
@@ -22,7 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sp_users', function (Blueprint $table) {
-            //
+            $table->dropForeign(['posyandu_id']);
+            $table->dropColumn('posyandu_id');
         });
     }
+
 };

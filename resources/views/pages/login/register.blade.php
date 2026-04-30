@@ -65,9 +65,22 @@
                 <label for="role" class="form-label">Role</label>
                 <select id="role" name="role" class="form-select" required>
                   <option value="">Pilih Role</option>
-                  <option value="admin">Admin / Kader</option>
+                  <option value="admin">Admin</option>
+                  <option value="kader">Petugas/kader</option>
                   <option value="user">Orang Tua</option>
                 </select>
+              </div>
+              <div class="mb-3">
+                  <label for="posyandu_id" class="form-label">Posyandu</label>
+                  <select id="posyandu_id" name="posyandu_id" class="form-select" required>
+                      <option value="">Pilih Posyandu</option>
+                      @foreach($posyandus as $posyandu)
+                          <option value="{{ $posyandu->id }}">{{ $posyandu->nama_posyandu }}</option>
+                      @endforeach
+                  </select>
+                  @error('posyandu_id')
+                      <div class="text-danger small mt-1">{{ $message }}</div>
+                  @enderror
               </div>
               <div class="form-footer">
                 <button type="submit" class="btn btn-primary w-100">Daftar</button>

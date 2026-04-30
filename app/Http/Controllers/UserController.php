@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Posyandu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -26,29 +26,33 @@ class UserController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
-        
+
         return back()->with('error', 'Username atau Password salah');
     }
 
     public function register()
     {
-        return view('pages.login.register');
+        // Kirim daftar posyandu ke form register
+        $posyandus = Posyandu::orderBy('nama_posyandu')->get();
+        return view('pages.login.register', compact('posyandus'));
     }
 
     public function doRegister(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|unique:sp_users,username',
-            'password' => 'required|string|min:4',
-            'role' => 'required'
+            'name'        => 'required|string|max:255',
+            'username'    => 'required|string|unique:sp_users,username',
+            'password'    => 'required|string|min:4',
+            'role'        => 'required',
+            'posyandu_id' => 'required|exists:sp_posyandu,id', // ← validasi posyandu
         ]);
 
         User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'name'        => $request->name,
+            'username'    => $request->username,
+            'password'    => Hash::make($request->password),
+            'role'        => $request->role,
+            'posyandu_id' => $request->posyandu_id, // ← simpan posyandu
         ]);
 
         return redirect('/login')->with('success', 'Registrasi berhasil, silakan login.');

@@ -13,12 +13,20 @@ class LaporanController extends Controller
         $bulan = $request->bulan ?? now()->month;
         $tahun = $request->tahun ?? now()->year;
 
+        // Tambahkan filter whereHas untuk posyandu
         $periksas = Periksa::with('balita')
+            ->whereHas('balita', function ($q) {
+                $q->where('posyandu_id', session('posyandu_id'));
+            })
             ->whereMonth('tanggal_periksa', $bulan)
             ->whereYear('tanggal_periksa', $tahun)
             ->get();
 
-        $tahunList = Periksa::selectRaw('YEAR(tanggal_periksa) as tahun')
+        // Tahun list juga difilter agar hanya muncul tahun dari data posyandu ini
+        $tahunList = Periksa::whereHas('balita', function ($q) {
+                $q->where('posyandu_id', session('posyandu_id'));
+            })
+            ->selectRaw('YEAR(tanggal_periksa) as tahun')
             ->distinct()
             ->orderBy('tahun', 'desc')
             ->pluck('tahun');
@@ -32,12 +40,13 @@ class LaporanController extends Controller
         $tahun = $request->tahun ?? now()->year;
 
         $periksas = Periksa::with('balita')
+            ->whereHas('balita', function ($q) {
+                $q->where('posyandu_id', session('posyandu_id'));
+            })
             ->whereMonth('tanggal_periksa', $bulan)
             ->whereYear('tanggal_periksa', $tahun)
             ->get();
 
-        $namaBulan = \Carbon\Carbon::create()->month($bulan)->locale('id')->translatedFormat('F');
-
-        return view('pages.laporan.cetak', compact('periksas', 'bulan', 'tahun', 'namaBulan'));
+        return view('pages.laporan.cetak', compact('periksas', 'bulan', 'tahun'));
     }
 }

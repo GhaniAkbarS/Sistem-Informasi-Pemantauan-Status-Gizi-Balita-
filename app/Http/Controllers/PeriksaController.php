@@ -11,51 +11,50 @@ class PeriksaController extends Controller
 {
     public function index()
     {
-        $periksas = Periksa::all();
+        // Hanya tampilkan periksa dari balita yang posyanduNya sama
+        $periksas = Periksa::whereHas('balita', function ($q) {
+            $q->where('posyandu_id', session('posyandu_id'));
+        })->get();
+
         return view('pages.periksa.index', compact('periksas'));
     }
 
     public function create()
     {
-        // Tambahkan pengambilan data Balita
-        $balitas = Balita::all(); 
+        // Hanya tampilkan balita dari posyandu yang sedang login
+        $balitas = Balita::where('posyandu_id', session('posyandu_id'))->get();
         return view('pages.periksa.create', compact('balitas'));
     }
 
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'balita_id' => 'required|exists:sp_balita,id',
-            'tgl_periksa' => 'required|date',
-            'berat_badan' => 'required|numeric',
-            'tinggi_badan' => 'required|numeric',
+            'balita_id'      => 'required|exists:sp_balita,id',
+            'tgl_periksa'    => 'required|date',
+            'berat_badan'    => 'required|numeric',
+            'tinggi_badan'   => 'required|numeric',
             'lingkar_kepala' => 'nullable|numeric',
-            'catatan' => 'nullable|string',
+            'catatan'        => 'nullable|string',
         ]);
 
-        // Ambil data balita
         $balita = Balita::findOrFail($request->balita_id);
 
-        // Hitung umur bulan
-        $tgl_lahir = \Carbon\Carbon::parse($balita->tgl_lahir);
+        $tgl_lahir   = \Carbon\Carbon::parse($balita->tgl_lahir);
         $tgl_periksa = \Carbon\Carbon::parse($request->tgl_periksa);
-        $umur_bulan = $tgl_lahir->diffInMonths($tgl_periksa);
+        $umur_bulan  = $tgl_lahir->diffInMonths($tgl_periksa);
 
-        // Simpan data dengan mapping kolom yang benar
         Periksa::create([
-            'balita_id' => $request->balita_id,
-            'tgl_lahir' => $balita->tgl_lahir,
-            'umur_bulan' => $umur_bulan,
-            'nama_ortu' => $balita->nama_ortu,
-            'tanggal_periksa' => $request->tgl_periksa, // Mapping tgl_periksa (form) -> tanggal_periksa (db)
-            'berat_badan' => $request->berat_badan,
-            'tinggi_badan' => $request->tinggi_badan,
-            'jenis_pengukuran' => 'TB', // Set default sementara
-            'status_gizi' => 'Gizi Normal', // Set default sementara
+            'balita_id'       => $request->balita_id,
+            'tgl_lahir'       => $balita->tgl_lahir,
+            'umur_bulan'      => $umur_bulan,
+            'nama_ortu'       => $balita->nama_ortu,
+            'tanggal_periksa' => $request->tgl_periksa,
+            'berat_badan'     => $request->berat_badan,
+            'tinggi_badan'    => $request->tinggi_badan,
+            'jenis_pengukuran'=> 'TB',
+            'status_gizi'     => 'Gizi Normal',
         ]);
 
-        return redirect()->route('periksa.index')
-            ->with('success', 'Data pemeriksaan berhasil ditambahkan.');
+        return redirect()->route('periksa.index')->with('success', 'Data pemeriksaan berhasil ditambahkan.');
     }
 }
