@@ -10,6 +10,24 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function userIndex()
+    {
+        // Admin hanya bisa melihat user yang posyandunya sama dengan dia
+        $users = User::where('posyandu_id', session('posyandu_id'))
+                    ->where('id', '!=', Auth::id()) // Agar tidak menghapus diri sendiri
+                    ->get();
+                    
+        return view('pages.users.index', compact('users'));
+    }
+
+    public function userDestroy($id)
+    {
+        $user = User::where('posyandu_id', session('posyandu_id'))->findOrFail($id);
+        $user->delete();
+        
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+    }
+    
     public function login()
     {
         return view('pages.login.index');

@@ -62,6 +62,16 @@
             <span>Rujukan</span></a>
     </li>
 
+    @if(Auth::user()->role == 'admin')
+    <li class="nav-item {{ Route::is('users.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('users.index') }}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Manajemen User</span>
+        </a>
+    </li>
+    @endif
+
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

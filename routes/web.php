@@ -18,6 +18,12 @@ Route::middleware(['guest'])->group(function () {
 // Logout harus bisa diakses saat sudah login
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 
+// Manajemen User (Hanya untuk Admin)
+Route::middleware(['role:admin'])->group(function () {
+    Route::get('/users', [UserController::class, 'userIndex'])->name('users.index');
+    Route::delete('/users/{id}', [UserController::class, 'userDestroy'])->name('users.destroy');
+});
+
 // ─── Route Terproteksi (Harus login + punya posyandu) ─────────────────────────
 Route::middleware(['auth', 'checkPosyandu'])->group(function () {
 
