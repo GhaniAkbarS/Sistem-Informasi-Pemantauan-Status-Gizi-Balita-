@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('sp_balita', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->enum('jk', ['L', 'P']);
+            $table->string('nama_ortu');
             $table->date('tgl_lahir');
             $table->integer('umur');
-            $table->string('nama_ortu');
             $table->double('tinggi_badan');
             $table->double('berat_badan');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

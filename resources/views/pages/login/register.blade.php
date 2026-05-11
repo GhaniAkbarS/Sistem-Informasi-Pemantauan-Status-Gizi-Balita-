@@ -21,7 +21,7 @@
       <div class="container container-tight py-4">
         <div class="text-center mb-4">
           <a href="." class="navbar-brand navbar-brand-autodark">
-            <h2 class="fw-bold text-primary">Posyandu Cendrawasih</h2>
+            <h2 class="fw-bold text-primary">Posyandu </h2>
           </a>
         </div>
         <div class="card card-md">
@@ -67,7 +67,7 @@
                   <option value="">Pilih Role</option>
                   <option value="admin">Admin</option>
                   <option value="kader">Petugas/kader</option>
-                  <option value="user">Orang Tua</option>
+                  <option value="orang_tua">Orang Tua</option>
                 </select>
               </div>
               <div class="mb-3">

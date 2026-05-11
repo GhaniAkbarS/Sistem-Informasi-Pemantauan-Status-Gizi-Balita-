@@ -40,6 +40,23 @@
             <span>Pemeriksaan</span></a>
     </li>
 
+    <!-- Nav Item - Imunisasi -->
+    <li class="nav-item {{ request()->routeIs('imunisasi.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('imunisasi.create') }}">
+            <i class="fas fa-fw fa-syringe"></i>
+            <span>Imunisasi</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Vitamin A -->
+    <li class="nav-item {{ request()->routeIs('vitamina.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('vitamina.create') }}">
+            <i class="fas fa-fw fa-capsules"></i>
+            <span>Vitamin A</span>
+        </a>
+    </li>
+
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 

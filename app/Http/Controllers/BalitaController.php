@@ -16,28 +16,33 @@ class BalitaController extends Controller
 
     public function create()
     {
-        return view('pages.balita.create');
+        $orangTuas = \App\Models\User::where('role', 'orang_tua')->get();
+        return view('pages.balita.create', compact('orangTuas'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama'        => 'required',
+            'jk'          => 'required',
             'tgl_lahir'   => 'required|date',
             'umur'        => 'required|numeric',
             'nama_ortu'   => 'required',
             'tinggi_badan'=> 'required|numeric',
             'berat_badan' => 'required|numeric',
+            'user_id'     => 'nullable|exists:sp_users,id',
         ]);
 
         Balita::create([
             'nama'         => $request->nama,
+            'jk'           => $request->jk,
             'tgl_lahir'    => $request->tgl_lahir,
             'umur'         => $request->umur,
             'nama_ortu'    => $request->nama_ortu,
             'tinggi_badan' => $request->tinggi_badan,
             'berat_badan'  => $request->berat_badan,
-            'posyandu_id'  => session('posyandu_id'), // ← otomatis dari session
+            'user_id'      => $request->user_id,
+            'posyandu_id'  => session('posyandu_id'),
         ]);
 
         return redirect()->route('balita.index')->with('success', 'Data Balita berhasil ditambahkan!');
@@ -46,13 +51,22 @@ class BalitaController extends Controller
     public function edit($id)
     {
         $balita = Balita::where('posyandu_id', session('posyandu_id'))->findOrFail($id);
-        return view('pages.balita.edit', compact('balita'));
+        
+        // Ambil akun orang tua dari posyandu yang sama
+        $orangTuas = \App\Models\User::where('posyandu_id', session('posyandu_id'))
+                        ->where('role', 'orang_tua')
+                        ->get();
+
+        return view('pages.balita.edit', compact('balita', 'orangTuas'));
     }
+
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama'        => 'required',
+            'user_id'     => 'nullable|exists:sp_users,id',
+            'jk'          => 'required',
             'tgl_lahir'   => 'required|date',
             'umur'        => 'required|numeric',
             'nama_ortu'   => 'required',

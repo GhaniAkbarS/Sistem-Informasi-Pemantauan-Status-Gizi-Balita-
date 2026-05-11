@@ -124,7 +124,7 @@
     {{-- Kop Laporan --}}
     <div class="header">
         <h2>Laporan Hasil Pemeriksaan Gizi Balita</h2>
-        <p>RW 03, Kelurahan Sidomulyo Timur</p>
+        <p>{{ session('posyandu_nama') }}</p>
         <p>Periode: {{ $namaBulan }} {{ $tahun }}</p>
     </div>
 

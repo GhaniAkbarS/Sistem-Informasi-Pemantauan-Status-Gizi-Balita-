@@ -5,7 +5,7 @@
             <div class="card-body py-5 d-flex justify-content-between align-items-center">
                 <div class="px-3">
                     <h4 class="m-0 font-weight-bold">Data Pemeriksaan</h4>
-                    <p class="m-0" style="opacity: 0.8;">RW 03, Kelurahan Sidomulyo Timur</p>
+                    <p class="m-0" style="opacity: 0.8;">{{ session('posyandu_nama') }}</p>
                 </div>
 
             </div>

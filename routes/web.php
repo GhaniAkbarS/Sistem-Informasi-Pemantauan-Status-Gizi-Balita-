@@ -5,6 +5,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BalitaController;
 use App\Http\Controllers\PeriksaController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\OrangTuaController;
+use App\Http\Controllers\ImunisasiController;
+use App\Http\Controllers\VitaminAController;
 use Carbon\Carbon;
 
 // ─── Route Publik (Hanya untuk tamu/belum login) ─────────────────────────
@@ -19,13 +22,25 @@ Route::middleware(['guest'])->group(function () {
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 
 // Manajemen User (Hanya untuk Admin)
-Route::middleware(['role:admin'])->group(function () {
+Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/users', [UserController::class, 'userIndex'])->name('users.index');
     Route::delete('/users/{id}', [UserController::class, 'userDestroy'])->name('users.destroy');
 });
 
+//Role orang tua
+Route::middleware(['auth', 'checkRole:orang_tua'])->group(function () {
+    Route::get('/portal', [OrangTuaController::class, 'index'])->name('ortu.dashboard');
+    Route::get('/portal/anak/{id}', [OrangTuaController::class, 'show'])->name('ortu.show');
+});
+
+
 // ─── Route Terproteksi (Harus login + punya posyandu) ─────────────────────────
 Route::middleware(['auth', 'checkPosyandu'])->group(function () {
+
+    Route::get('/imunisasi/create', [ImunisasiController::class, 'create'])->name('imunisasi.create');
+    Route::post('/imunisasi/store', [ImunisasiController::class, 'store'])->name('imunisasi.store');
+    Route::get('/vitamin-a/create', [VitaminAController::class, 'create'])->name('vitamina.create');
+    Route::post('/vitamin-a/store', [VitaminAController::class, 'store'])->name('vitamina.store');
 
     // Dashboard
     Route::get('/', function () {

@@ -5,7 +5,7 @@
             <div class="card-body py-5 d-flex justify-content-between align-items-center">
                 <div class="px-3">
                     <h4 class="m-0 font-weight-bold">Input Data Balita</h4>
-                    <p class="m-0" style="opacity: 0.8;">RW 03, Kelurahan Sidomulyo Timur</p>
+                    <p class="m-0" style="opacity: 0.8;">{{ session('posyandu_nama') }}</p>
                 </div>
                 <div class="text-right px-3">
                     <p class="m-0"><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
@@ -38,6 +38,16 @@
                                     </div>
                                 </div>
 
+                                <!-- Jenis Kelamin -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Jenis Kelamin</label>
+                                    <select name="jk" class="form-select" required>
+                                        <option value="">Pilih</option>
+                                        <option value="L">Laki-laki</option>
+                                        <option value="P">Perempuan</option>
+                                    </select>
+                                </div>
+
                                 <!-- Tanggal Lahir -->
                                 <div class="col-md-6">
                                     <div class="mb-3">
@@ -62,6 +72,28 @@
                                         <input type="text" id="nama_ortu" name="nama_ortu" class="form-control" placeholder="Masukkan nama orang tua" required>
                                     </div>
                                 </div>
+
+                                <!-- Menghubungkan dengan Akun Orang Tua -->
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="user_id" class="form-label">
+                                            Hubungkan ke Akun Orang Tua
+                                            <small class="text-muted">(opsional)</small>
+                                        </label>
+                                        <select id="user_id" name="user_id" class="form-select">
+                                            <option value="">-- Belum dihubungkan --</option>
+                                            @foreach($orangTuas as $ortu)
+                                                <option value="{{ $ortu->id }}">
+                                                    {{ $ortu->name }} ({{ $ortu->username }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="form-hint text-muted">
+                                            *Pilih akun agar orang tua bisa memantau perkembangan anak di portal
+                                        </small>
+                                    </div>
+                                </div>
+
 
                                 <!-- Tinggi Badan -->
                                 <div class="col-md-6">

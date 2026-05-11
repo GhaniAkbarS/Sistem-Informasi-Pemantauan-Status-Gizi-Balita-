@@ -1,104 +1,105 @@
-@extends('components.nav-layout')
+<x-app-layout>
+<div class="main-content">
 
-@section('content')
-<div class="page-header d-print-none">
-    <div class="container-xl">
-        <div class="row g-2 align-items-center">
-            <div class="col">
-                <h2 class="page-title">
-                    Manajemen User Posyandu
-                </h2>
-                <div class="text-muted mt-1">Daftar petugas dan pengguna di {{ session('posyandu_nama') }}</div>
+    {{-- Header Card --}}
+    <div class="card mb-4 bg-primary text-white rounded-0 border-0">
+        <div class="card-body py-5 d-flex justify-content-between align-items-center">
+            <div class="px-3">
+                <h4 class="m-0 font-weight-bold">Manajemen User Posyandu</h4>
+                <p class="m-0" style="opacity: 0.8;">Daftar petugas dan pengguna di {{ session('posyandu_nama') }}</p>
             </div>
         </div>
     </div>
-</div>
 
-<div class="page-body">
-    <div class="container-xl">
+    <div class="container">
+
+        {{-- Alert Success --}}
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <div class="d-flex">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
-                    </div>
-                    <div>{{ session('success') }}</div>
-                </div>
-                <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
             </div>
         @endif
 
+        {{-- Alert Error --}}
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <div class="d-flex">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v2m0 4v.01m-6.937 2.89l13.874 0a1.94 1.94 0 0 0 1.683 -2.912l-6.937 -12.012a1.94 1.94 0 0 0 -3.366 0l-6.937 12.012a1.94 1.94 0 0 0 1.683 2.912z" /></svg>
-                    </div>
-                    <div>{{ session('error') }}</div>
-                </div>
-                <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i>{{ session('error') }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
             </div>
         @endif
 
-        <div class="card">
-            <div class="table-responsive">
-                <table class="table table-vcenter card-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Lengkap</th>
-                            <th>Username</th>
-                            <th>Role</th>
-                            <th>Tanggal Bergabung</th>
-                            <th class="w-1">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($users as $user)
-                        <tr>
-                            <td>
-                                <div class="d-flex py-1 align-items-center">
-                                    <span class="avatar me-2" style="background-image: url('https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random')"></span>
-                                    <div class="flex-fill">
-                                        <div class="font-weight-medium">{{ $user->name }}</div>
+        {{-- Tabel User --}}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-users mr-2"></i>Daftar Pengguna
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th width="5%">#</th>
+                                <th>Nama Lengkap</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Tanggal Bergabung</th>
+                                <th class="text-center" width="10%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($users as $index => $user)
+                            <tr>
+                                <td class="align-middle">{{ $index + 1 }}</td>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=4e73df&color=fff&size=36"
+                                             class="rounded-circle mr-3" width="36" height="36" alt="Avatar">
+                                        <span class="font-weight-bold">{{ $user->name }}</span>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="text-secondary">
-                                {{ $user->username }}
-                            </td>
-                            <td>
-                                @if($user->role == 'admin')
-                                    <span class="badge bg-blue-lt">Admin Posyandu</span>
-                                @elseif($user->role == 'kader')
-                                    <span class="badge bg-green-lt">Petugas / Kader</span>
-                                @else
-                                    <span class="badge bg-orange-lt">Orang Tua</span>
-                                @endif
-                            </td>
-                            <td class="text-secondary">
-                                {{ $user->created_at->format('d M Y') }}
-                            </td>
-                            <td>
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini? Akun ini tidak akan bisa login lagi.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-ghost-danger btn-icon" title="Hapus User">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-4">
-                                <div class="text-muted">Tidak ada user lain di posyandu ini.</div>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="align-middle text-muted">{{ $user->username }}</td>
+                                <td class="align-middle">
+                                    @if($user->role == 'admin')
+                                        <span class="badge badge-primary px-2 py-1">Admin Posyandu</span>
+                                    @elseif($user->role == 'kader')
+                                        <span class="badge badge-success px-2 py-1">Petugas / Kader</span>
+                                    @else
+                                        <span class="badge badge-warning px-2 py-1">Orang Tua</span>
+                                    @endif
+                                </td>
+                                <td class="align-middle">{{ $user->created_at->format('d M Y') }}</td>
+                                <td class="align-middle text-center">
+                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus user ini? Akun tidak bisa login lagi.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-users fa-3x mb-3 d-block" style="opacity: 0.3;"></i>
+                                    Tidak ada user lain di posyandu ini.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
-@endsection
+</x-app-layout>

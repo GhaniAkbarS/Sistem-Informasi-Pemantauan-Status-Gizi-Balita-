@@ -42,6 +42,10 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $role = Auth::user()->role;
+            if ($role == 'orang_tua'){
+                return redirect()->route('ortu.dashboard');
+            }
             return redirect()->intended('/');
         }
 
