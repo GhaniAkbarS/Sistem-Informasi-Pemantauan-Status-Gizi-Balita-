@@ -30,4 +30,17 @@ class VitaminAController extends Controller
 
         return redirect()->route('vitamina.create')->with('success', 'Data Vitamin A berhasil disimpan.');
     }
+
+    public function index()
+    {
+        $vitamins = VitaminA::with('balita')
+            ->whereHas('balita', function ($q) {
+                $q->where('posyandu_id', session('posyandu_id'));
+            })
+            ->orderBy('tanggal_pemberian', 'desc')
+            ->get();
+
+        return view('pages.vitamin_a.index', compact('vitamins'));
+    }
+
 }

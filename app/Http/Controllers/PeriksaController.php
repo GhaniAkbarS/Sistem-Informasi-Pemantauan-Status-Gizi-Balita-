@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Periksa;
 use App\Models\Balita;
+use App\Services\GiziKalkulator;
 
 class PeriksaController extends Controller
 {
@@ -21,6 +22,7 @@ class PeriksaController extends Controller
 
     public function create()
     {
+
         // Hanya tampilkan balita dari posyandu yang sedang login
         $balitas = Balita::where('posyandu_id', session('posyandu_id'))->get();
         return view('pages.periksa.create', compact('balitas'));
@@ -42,6 +44,12 @@ class PeriksaController extends Controller
         $tgl_lahir   = \Carbon\Carbon::parse($balita->tgl_lahir);
         $tgl_periksa = \Carbon\Carbon::parse($request->tgl_periksa);
         $umur_bulan  = $tgl_lahir->diffInMonths($tgl_periksa);
+        $gizi = \App\Services\GiziKalkulator::hitung(
+        (float) $request->berat_badan,
+        (float) $request->tinggi_badan,
+        (int)   $umur_bulan,
+        $balita->jk
+    );
 
         Periksa::create([
             'balita_id'       => $request->balita_id,
@@ -52,7 +60,7 @@ class PeriksaController extends Controller
             'berat_badan'     => $request->berat_badan,
             'tinggi_badan'    => $request->tinggi_badan,
             'jenis_pengukuran'=> 'TB',
-            'status_gizi'     => 'Gizi Normal',
+            'status_gizi'     => $gizi['status_gizi'],
         ]);
 
         return redirect()->route('periksa.index')->with('success', 'Data pemeriksaan berhasil ditambahkan.');

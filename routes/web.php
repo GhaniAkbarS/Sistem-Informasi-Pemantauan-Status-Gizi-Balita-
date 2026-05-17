@@ -60,14 +60,43 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
         $giziNormal = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
                                     $q->where('posyandu_id', $posyanduId);
                                 })
-                                ->where('status_gizi', 'Normal')->count();
+                                ->where('status_gizi', 'Gizi Baik')->count();
 
         $perluRujukan = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
                                     $q->where('posyandu_id', $posyanduId);
                                 })
-                                ->whereIn('status_gizi', ['Sangat Pendek', 'Buruk', 'Stunting'])->count();
+                                ->whereIn('status_gizi', ['Stunting', 'Gizi Kurang'])->count();
 
-        $recentExaminations = \App\Models\Periksa::with('balita')
+        // Distribusi status gizi
+        $distribusi = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
+                            $q->where('posyandu_id', $posyanduId);
+                        })
+                        ->selectRaw('status_gizi, COUNT(*) as total')
+                        ->groupBy('status_gizi')
+                        ->pluck('total', 'status_gizi');
+
+        $distNormal   = $distribusi['Gizi Baik'] ?? 0;
+        $distKurang   = $distribusi['Gizi Kurang'] ?? 0;
+        $distLebih    = $distribusi['Gizi Lebih']  ?? 0;
+        $distStunting = $distribusi['Stunting']    ?? 0;
+        $totalDist    = $distNormal + $distKurang + $distLebih + $distStunting;
+
+        // Tren pemeriksaan 6 bulan terakhir
+        $trenLabels = [];
+        $trenData   = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $bulan        = Carbon::now()->subMonths($i);
+            $trenLabels[] = $bulan->locale('id')->translatedFormat('M Y');
+            $trenData[]   = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
+                                $q->where('posyandu_id', $posyanduId);
+                            })
+                            ->whereMonth('tanggal_periksa', $bulan->month)
+                            ->whereYear('tanggal_periksa', $bulan->year)
+                            ->count();
+        }
+
+
+                                $recentExaminations = \App\Models\Periksa::with('balita')
                                 ->whereHas('balita', function($q) use ($posyanduId) {
                                     $q->where('posyandu_id', $posyanduId);
                                 })
@@ -80,7 +109,14 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
             'pemeriksaanBulanIni',
             'giziNormal',
             'perluRujukan',
-            'recentExaminations'
+            'recentExaminations',
+            'distNormal', 
+            'distKurang', 
+            'distLebih', 
+            'distStunting', 
+            'totalDist',
+            'trenLabels', 
+            'trenData'
         ));
     })->name('dashboard.index');
 
@@ -100,7 +136,16 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
     Route::put('/periksa/{id}', [PeriksaController::class, 'update'])->name('periksa.update');
     Route::delete('/periksa/{id}', [PeriksaController::class, 'destroy'])->name('periksa.destroy');
 
+    // Imunisasi & Vitamin A index
+    Route::get('/imunisasi', [ImunisasiController::class, 'index'])->name('imunisasi.index');
+    Route::get('/vitamin-a', [VitaminAController::class, 'index'])->name('vitamina.index');
+    
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+    // Laporan cetak tambahan
+    Route::get('/laporan/cetak/balita',    [LaporanController::class, 'cetakBalita'])->name('laporan.cetak.balita');
+    Route::get('/laporan/cetak/imunisasi', [LaporanController::class, 'cetakImunisasi'])->name('laporan.cetak.imunisasi');
+    Route::get('/laporan/cetak/vitamina',  [LaporanController::class, 'cetakVitaminA'])->name('laporan.cetak.vitamina');
+
 });

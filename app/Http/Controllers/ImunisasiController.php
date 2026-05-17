@@ -29,4 +29,17 @@ class ImunisasiController extends Controller
 
         return redirect()->route('imunisasi.create')->with('success', 'Data imunisasi berhasil disimpan.');
     }
+
+    public function index()
+    {
+        $imunisasis = Imunisasi::with('balita')
+            ->whereHas('balita', function ($q) {
+                $q->where('posyandu_id', session('posyandu_id'));
+            })
+            ->orderBy('tanggal_pemberian', 'desc')
+            ->get();
+
+        return view('pages.imunisasi.index', compact('imunisasis'));
+    }
+
 }

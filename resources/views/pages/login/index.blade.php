@@ -24,7 +24,7 @@
             <div class="container-tight">
               <div class="text-center mb-4">
                 <a href="." class="navbar-brand navbar-brand-autodark">
-                  <h2 class="fw-bold text-primary">Posyandu Cendrawasih</h2>
+                  <h2 class="fw-bold text-primary">Posyandu</h2>
                 </a>
               </div>
               <div class="card card-md">

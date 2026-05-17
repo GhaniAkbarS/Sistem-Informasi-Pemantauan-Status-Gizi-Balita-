@@ -12,7 +12,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs('dashboard.index') ? 'active' : '' }} {{ Auth::user()->role == 'orang_tua' ? 'd-none' : '' }}">
         <a class="nav-link" href="{{ route('dashboard.index') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -27,14 +27,14 @@
     </div>
 
     <!-- Nav Item - Data Balita -->
-    <li class="nav-item {{ request()->routeIs('balita.index') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs('balita.index') ? 'active' : '' }} {{ Auth::user()->role == 'orang_tua' ? 'd-none' : '' }}">
         <a class="nav-link" href="{{ route('balita.index') }}">
             <i class="fas fa-fw fa-users"></i>
             <span>Data Balita</span></a>
     </li>
 
     <!-- Nav Item - Pemeriksaan -->
-    <li class="nav-item {{ request()->routeIs('periksa.index') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs('periksa.index') ? 'active' : '' }} {{ Auth::user()->role == 'orang_tua' ? 'd-none' : '' }}">
         <a class="nav-link" href="{{ route('periksa.index') }}">
             <i class="fas fa-fw fa-stethoscope"></i>
             <span>Pemeriksaan</span></a>

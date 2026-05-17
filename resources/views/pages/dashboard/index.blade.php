@@ -73,25 +73,32 @@
                     <div class="status-breakdown">
                         <div class="status-item">
                             <div class="status-color" style="background: #10b981;"></div>
-                            <span class="status-label">Normal</span>
-                            <span class="status-count">68</span>
-                            <span class="status-percentage">78%</span>
+                            <span class="status-label">Gizi Normal</span>
+                            <span class="status-count">{{ $distNormal }}</span>
+                            <span class="status-percentage">{{ $totalDist > 0 ? round($distNormal / $totalDist * 100) : 0 }}%</span>
                         </div>
                         <div class="status-item">
                             <div class="status-color" style="background: #f59e0b;"></div>
-                            <span class="status-label">Pendek (Berisiko)</span>
-                            <span class="status-count">16</span>
-                            <span class="status-percentage">18%</span>
+                            <span class="status-label">Gizi Kurang</span>
+                            <span class="status-count">{{ $distKurang }}</span>
+                            <span class="status-percentage">{{ $totalDist > 0 ? round($distKurang / $totalDist * 100) : 0 }}%</span>
                         </div>
                         <div class="status-item">
                             <div class="status-color" style="background: #ef4444;"></div>
-                            <span class="status-label">Sangat Pendek (Stunting)</span>
-                            <span class="status-count">3</span>
-                            <span class="status-percentage">3%</span>
+                            <span class="status-label">Stunting</span>
+                            <span class="status-count">{{ $distStunting }}</span>
+                            <span class="status-percentage">{{ $totalDist > 0 ? round($distStunting / $totalDist * 100) : 0 }}%</span>
                         </div>
+                        <div class="status-item">
+                            <div class="status-color" style="background: #3b82f6;"></div>
+                            <span class="status-label">Gizi Lebih</span>
+                            <span class="status-count">{{ $distLebih }}</span>
+                            <span class="status-percentage">{{ $totalDist > 0 ? round($distLebih / $totalDist * 100) : 0 }}%</span>
+                        </div>
+
                         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
                             <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">
-                                <strong>Catatan:</strong> 19 balita (22%) memerlukan pemantauan intensif
+                                <strong>Catatan:</strong> {{ $perluRujukan }} balita memerlukan pemantauan intensif
                             </p>
                             <p style="font-size: 12px; color: #9ca3af;">
                                 Data per 1 Desember 2025

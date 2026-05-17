@@ -4,13 +4,7 @@
             <div class="card-body py-4 px-4">
                 <h4 class="m-0 font-weight-bold">Portal Orang Tua</h4>
                 <p class="m-0" style="opacity:0.8">Selamat datang, {{ Auth::user()->name }}</p>
-                <div class="mt-2">
-                    <a href="{{ route('logout') }}"
-                        onclick="event.preventDefault(); if(confirm('Yakin ingin keluar?')) window.location.href='{{ route('logout') }}';"
-                        class="btn btn-light btn-sm">
-                        Keluar
-                    </a>
-                </div>
+
             </div>
         </div>
 
