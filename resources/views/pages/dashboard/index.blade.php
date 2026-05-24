@@ -17,7 +17,7 @@
 
                 <div class="alert-content">
                     <h3>Perhatian: Terdeteksi Kasus Berisiko Stunting</h3>
-                    <p>3 balita memerlukan perhatian khusus dan rujukan ke Puskesmas</p>
+                    <p>{{ $perluRujukan }} balita memerlukan perhatian khusus dan rujukan ke Puskesmas</p>
                 </div>
             </div>
 
@@ -101,7 +101,7 @@
                                 <strong>Catatan:</strong> {{ $perluRujukan }} balita memerlukan pemantauan intensif
                             </p>
                             <p style="font-size: 12px; color: #9ca3af;">
-                                Data per 1 Desember 2025
+                                Data per {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
                             </p>
                         </div>
                     </div>
@@ -166,7 +166,7 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jun", "Jul", "Agt", "Sep", "Okt", "Nov"],
+    labels: {!! json_encode($trenLabels) !!},
     datasets: [{
       label: "Total Pemeriksaan",
       lineTension: 0.3,
@@ -180,7 +180,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [58, 61, 65, 67, 63, 62], // Mensuplai data sesuai dengan teks dari placeholder sebelumnya
+      data: {!! json_encode($trenData) !!},
     }],
   },
   options: {

@@ -1,4 +1,6 @@
+
 <x-app-layout>
+    
     <div class="main-content">
         <!-- Basic Card Example -->
         <div class="card mb-4 bg-primary text-white rounded-0 border-0">
@@ -37,6 +39,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                @include('pages.periksa.riwayat_anak')
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Tanggal Pemeriksaan</label>
@@ -81,4 +84,68 @@
             </div>
         </div>
     </div>
+@push('after-script')
+<script>
+document.querySelector('select[name="balita_id"]').addEventListener('change', function () {
+    const balitaId = this.value;
+    const container = document.getElementById('riwayat-container');
+
+    if (!balitaId) {
+        container.style.display = 'none';
+        return;
+    }
+
+    fetch(`/periksa/riwayat-anak/${balitaId}`)
+        .then(res => res.json())
+        .then(data => {
+            const fmt = (tgl) => tgl
+                ? new Date(tgl).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+                : '-';
+
+            const statusBadge = (status) => {
+                const color = status === 'Gizi Baik' ? 'success'
+                    : (status === 'Stunting' || status === 'Gizi Buruk') ? 'danger'
+                    : 'warning';
+                return `<span class="badge bg-${color}">${status ?? '-'}</span>`;
+            };
+
+            // Render Pemeriksaan
+            document.getElementById('badge-periksa').textContent = data.periksa.length;
+            document.getElementById('list-periksa').innerHTML = data.periksa.length
+                ? data.periksa.map(p => `
+                    <tr>
+                        <td>${fmt(p.tanggal)}</td>
+                        <td>${p.berat_badan ?? '-'}</td>
+                        <td>${p.tinggi_badan ?? '-'}</td>
+                        <td>${statusBadge(p.status_gizi)}</td>
+                    </tr>`).join('')
+                : `<tr><td colspan="4" class="text-center text-muted py-3">Belum ada data pemeriksaan</td></tr>`;
+
+            // Render Imunisasi
+            document.getElementById('badge-imunisasi').textContent = data.imunisasi.length;
+            document.getElementById('list-imunisasi').innerHTML = data.imunisasi.length
+                ? data.imunisasi.map(i => `
+                    <tr>
+                        <td>${fmt(i.tanggal)}</td>
+                        <td>${i.nama_vaksin ?? '-'}</td>
+                        <td>${i.keterangan ?? '-'}</td>
+                    </tr>`).join('')
+                : `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada data imunisasi</td></tr>`;
+
+            // Render Vitamin A
+            document.getElementById('badge-vitamin').textContent = data.vitamin_a.length;
+            document.getElementById('list-vitamin').innerHTML = data.vitamin_a.length
+                ? data.vitamin_a.map(v => `
+                    <tr>
+                        <td>${fmt(v.tanggal)}</td>
+                        <td>${v.jenis_kapsul ? 'Kapsul ' + v.jenis_kapsul : '-'}</td>
+                    </tr>`).join('')
+                : `<tr><td colspan="2" class="text-center text-muted py-3">Belum ada data vitamin A</td></tr>`;
+
+            container.style.display = 'block';
+        });
+});
+</script>
+@endpush
+
 </x-app-layout>

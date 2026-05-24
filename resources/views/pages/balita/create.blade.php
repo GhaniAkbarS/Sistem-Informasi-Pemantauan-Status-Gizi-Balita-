@@ -65,23 +65,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Nama Orang Tua -->
+                                <!-- Pilih Akun Orang Tua -->
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="nama_ortu" class="form-label">Nama Orang Tua (Ibu/Ayah)</label>
-                                        <input type="text" id="nama_ortu" name="nama_ortu" class="form-control" placeholder="Masukkan nama orang tua" required>
-                                    </div>
-                                </div>
-
-                                <!-- Menghubungkan dengan Akun Orang Tua -->
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label for="user_id" class="form-label">
-                                            Hubungkan ke Akun Orang Tua
-                                            <small class="text-muted">(opsional)</small>
-                                        </label>
-                                        <select id="user_id" name="user_id" class="form-select">
-                                            <option value="">-- Belum dihubungkan --</option>
+                                        <label for="user_id" class="form-label">Pilih Akun Orang Tua</label>
+                                        <select id="user_id" name="user_id" class="form-select" required>
+                                            <option value="">-- Pilih Orang Tua --</option>
                                             @foreach($orangTuas as $ortu)
                                                 <option value="{{ $ortu->id }}">
                                                     {{ $ortu->name }} ({{ $ortu->username }})
@@ -89,11 +78,11 @@
                                             @endforeach
                                         </select>
                                         <small class="form-hint text-muted">
-                                            *Pilih akun agar orang tua bisa memantau perkembangan anak di portal
+                                            Orang tua belum terdaftar?
+                                            <a href="{{ route('ortu.create') }}">Daftarkan di sini</a>
                                         </small>
                                     </div>
                                 </div>
-
 
                                 <!-- Tinggi Badan -->
                                 <div class="col-md-6">

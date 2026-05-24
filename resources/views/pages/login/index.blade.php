@@ -24,7 +24,7 @@
             <div class="container-tight">
               <div class="text-center mb-4">
                 <a href="." class="navbar-brand navbar-brand-autodark">
-                  <h2 class="fw-bold text-primary">Posyandu</h2>
+                  <h2 class="fw-bold text-primary">SiGizi | Sistem Pemantauan Gizi Balita</h2>
                 </a>
               </div>
               <div class="card card-md">
@@ -71,9 +71,6 @@
                     </div>
                   </form>
                 </div>
-              </div>
-              <div class="text-center text-secondary mt-3">
-                Belum punya akun? <a href="{{ route('register') }}" tabindex="-1">Daftar disini</a>
               </div>
             </div>
           </div>

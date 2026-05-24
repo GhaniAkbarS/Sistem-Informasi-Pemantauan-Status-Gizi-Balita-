@@ -14,8 +14,6 @@ use Carbon\Carbon;
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [UserController::class, 'login'])->name('login');
     Route::post('/login', [UserController::class, 'doLogin'])->name('login.post');
-    Route::get('/register', [UserController::class, 'register'])->name('register');
-    Route::post('/register', [UserController::class, 'doRegister'])->name('register.post');
 });
 
 // Logout harus bisa diakses saat sudah login
@@ -37,10 +35,14 @@ Route::middleware(['auth', 'checkRole:orang_tua'])->group(function () {
 // ─── Route Terproteksi (Harus login + punya posyandu) ─────────────────────────
 Route::middleware(['auth', 'checkPosyandu'])->group(function () {
 
+    // Kelola Akun Orang Tua (oleh Kader)
+    Route::get('/orang-tua/create', [UserController::class, 'createOrangTua'])->name('ortu.create');
+    Route::post('/orang-tua/store', [UserController::class, 'storeOrangTua'])->name('ortu.store');
     Route::get('/imunisasi/create', [ImunisasiController::class, 'create'])->name('imunisasi.create');
     Route::post('/imunisasi/store', [ImunisasiController::class, 'store'])->name('imunisasi.store');
     Route::get('/vitamin-a/create', [VitaminAController::class, 'create'])->name('vitamina.create');
     Route::post('/vitamin-a/store', [VitaminAController::class, 'store'])->name('vitamina.store');
+    Route::get('/periksa/riwayat-anak/{balita_id}', [PeriksaController::class, 'riwayatAnak'])->name('periksa.riwayat-anak');
 
     // Dashboard
     Route::get('/', function () {

@@ -16,7 +16,7 @@ class BalitaController extends Controller
 
     public function create()
     {
-        $orangTuas = \App\Models\User::where('role', 'orang_tua')->get();
+        $orangTuas = \App\Models\User::where('role', 'orang_tua')->where('posyandu_id',session('posyandu_id'))->get();
         return view('pages.balita.create', compact('orangTuas'));
     }
 
@@ -27,18 +27,19 @@ class BalitaController extends Controller
             'jk'          => 'required',
             'tgl_lahir'   => 'required|date',
             'umur'        => 'required|numeric',
-            'nama_ortu'   => 'required',
             'tinggi_badan'=> 'required|numeric',
             'berat_badan' => 'required|numeric',
-            'user_id'     => 'nullable|exists:sp_users,id',
+            'user_id'     => 'required|exists:sp_users,id',
         ]);
+
+        $orangTua = \App\Models\User::findOrFail($request->user_id);
 
         Balita::create([
             'nama'         => $request->nama,
             'jk'           => $request->jk,
             'tgl_lahir'    => $request->tgl_lahir,
             'umur'         => $request->umur,
-            'nama_ortu'    => $request->nama_ortu,
+            'nama_ortu'    => $orangTua->name,
             'tinggi_badan' => $request->tinggi_badan,
             'berat_badan'  => $request->berat_badan,
             'user_id'      => $request->user_id,

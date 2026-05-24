@@ -88,4 +88,37 @@ class UserController extends Controller
 
         return redirect('/login');
     }
+
+    public function createOrangTua()
+    {
+        return view('pages.ortu.create');
+    }
+
+    public function storeOrangTua(Request $request)
+    {
+        $request->validate([
+        'name' => 'required|string|max:255',
+        ]);
+        // Auto-generate username: huruf kecil, tanpa spasi
+        $baseUsername = strtolower(str_replace(' ', '', $request->name));
+        $username = $baseUsername;
+        $counter = 1;
+        while (User::where('username', $username)->exists()) {
+            $username = $baseUsername . $counter;
+            $counter++;
+        }
+        User::create([
+            'name'        => $request->name,
+            'username'    => $username,
+            'password'    => Hash::make('posyandu123'),
+            'role'        => 'orang_tua',
+            'posyandu_id' => session('posyandu_id'),
+        ]);
+        return redirect()->route('ortu.create')
+            ->with('success_ortu', [
+                'name'     => $request->name,
+                'username' => $username,
+                'password' => 'posyandu123',
+            ]);
+    }
 }

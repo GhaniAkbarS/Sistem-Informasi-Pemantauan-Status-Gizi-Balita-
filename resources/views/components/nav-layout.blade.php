@@ -33,6 +33,14 @@
             <span>Data Balita</span></a>
     </li>
 
+    <!-- Nav Item - Kelola Orang Tua -->
+<li class="nav-item {{ request()->routeIs('ortu.create') ? 'active' : '' }} {{ Auth::user()->role == 'orang_tua' ? 'd-none' : '' }}">
+    <a class="nav-link" href="{{ route('ortu.create') }}">
+        <i class="fas fa-fw fa-user-friends"></i>
+        <span>Kelola Orang Tua</span>
+    </a>
+</li>
+
     <!-- Nav Item - Pemeriksaan -->
     <li class="nav-item {{ request()->routeIs('periksa.index') ? 'active' : '' }} {{ Auth::user()->role == 'orang_tua' ? 'd-none' : '' }}">
         <a class="nav-link" href="{{ route('periksa.index') }}">

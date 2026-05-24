@@ -21,7 +21,8 @@
       <div class="container container-tight py-4">
         <div class="text-center mb-4">
           <a href="." class="navbar-brand navbar-brand-autodark">
-            <h2 class="fw-bold text-primary">Posyandu </h2>
+            <h2 class="fw-bold text-primary">SiGizi | Sistem Pemantauan Gizi Balita
+ </h2>
           </a>
         </div>
         <div class="card card-md">
