@@ -28,6 +28,43 @@
         .container {
            /* padding: 20px; */
         }
+
+        /* === GLOBAL MOBILE FIXES === */
+        /* Pastikan main-content tidak overflow di mobile */
+        .main-content {
+            width: 100%;
+            overflow-x: hidden;
+        }
+        /* Card header tombol & judul agar tidak terpotong di mobile */
+        .card-header.d-flex {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        /* Nav tabs horizontal scroll di mobile */
+        .nav-tabs {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .nav-tabs .nav-link {
+            white-space: nowrap;
+        }
+        /* Header banner responsive */
+        .card.bg-primary .card-body {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        /* Container-xl tidak lebih dari 100% di mobile */
+        .container-xl {
+            max-width: 100%;
+        }
+        /* Pastikan semua gambar tidak overflow */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
         
         /* === RESTORED DASHBOARD STYLES === */
         .alert-box {
@@ -129,17 +166,126 @@
             font-weight: 700;
         }
         
+        /* Fix table di .recent-table agar scrollable di mobile */
         .recent-table {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
         }
-        
-        /* Fix Responsive Grid */
+        .recent-table table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+        }
+        .recent-table table th,
+        .recent-table table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e3e6f0;
+            white-space: nowrap;
+        }
+        .recent-table table thead {
+            background: #f8f9fc;
+        }
+        .recent-table table tr:hover {
+            background: #f8f9fc;
+        }
+        .action-btn {
+            background: #4e73df;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-block;
+        }
+        .action-btn:hover {
+            background: #375dca;
+            color: white;
+        }
+
+        /* === RESPONSIVE: Tablet (max 1024px) === */
         @media (max-width: 1024px) {
-            .charts-section, .stats-grid {
-                grid-template-columns: 1fr;
+            .charts-section {
+                grid-template-columns: 1fr !important;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        /* === RESPONSIVE: Mobile (max 768px) === */
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr !important;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+            .stat-card {
+                padding: 16px !important;
+            }
+            .stat-value {
+                font-size: 24px !important;
+            }
+            .header h1 {
+                font-size: 18px !important;
+            }
+            .container, .container-xl {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+            /* Alert box stack vertically */
+            .alert-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            /* Chart card padding reduction */
+            .chart-card {
+                padding: 16px !important;
+            }
+            /* Recent table title */
+            .recent-table h2 {
+                font-size: 16px;
+            }
+        }
+
+        /* === RESPONSIVE: Small Mobile (max 480px) === */
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .stat-card {
+                padding: 14px !important;
+            }
+        }
+
+        /* === GLOBAL: Cegah horizontal scroll ===  */
+        body {
+            overflow-x: hidden !important;
+        }
+
+        /* === PADDING: kompensasi topbar mobile sticky ===
+           Topbar 56px, jadi konten tidak tertutup */
+        @media (max-width: 767.98px) {
+            /* Pastikan konten dimulai setelah topbar */
+            .main-content > div:first-child {
+                /* tidak perlu margin-top karena topbar di luar wrapper */
+            }
+            /* Kurangi padding besar di card banner */
+            .card.bg-primary .card-body.py-5 {
+                padding-top: 20px !important;
+                padding-bottom: 20px !important;
+            }
+            /* Tombol kembali di header halaman detail ortu */
+            .card.bg-primary .card-body .btn {
+                font-size: 13px;
+                padding: 5px 10px;
+            }
+            /* Container padding di mobile */
+            .container-xl.mt-4 {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
             }
         }
     </style>
