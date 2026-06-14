@@ -65,18 +65,34 @@ class BalitaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama'        => 'required',
-            'user_id'     => 'nullable|exists:sp_users,id',
-            'jk'          => 'required',
-            'tgl_lahir'   => 'required|date',
-            'umur'        => 'required|numeric',
-            'nama_ortu'   => 'required',
-            'tinggi_badan'=> 'required|numeric',
-            'berat_badan' => 'required|numeric',
+            'nama'         => 'required',
+            'user_id'      => 'nullable|exists:sp_users,id',
+            'jk'           => 'required',
+            'tgl_lahir'    => 'required|date',
+            'umur'         => 'required|numeric',
+            'tinggi_badan' => 'required|numeric',
+            'berat_badan'  => 'required|numeric',
         ]);
 
         $balita = Balita::where('posyandu_id', session('posyandu_id'))->findOrFail($id);
-        $balita->update($request->except('posyandu_id')); // posyandu_id tidak boleh diubah
+
+        // Ambil nama_ortu dari user yang dipilih
+        $namaOrtu = $balita->nama_ortu; // default tetap yang lama
+        if ($request->user_id) {
+            $orangTua = \App\Models\User::find($request->user_id);
+            if ($orangTua) $namaOrtu = $orangTua->name;
+        }
+
+        $balita->update([
+            'nama'         => $request->nama,
+            'jk'           => $request->jk,
+            'tgl_lahir'    => $request->tgl_lahir,
+            'umur'         => $request->umur,
+            'nama_ortu'    => $namaOrtu,
+            'tinggi_badan' => $request->tinggi_badan,
+            'berat_badan'  => $request->berat_badan,
+            'user_id'      => $request->user_id,
+        ]);
 
         return redirect()->route('balita.index')->with('success', 'Data Balita berhasil diperbarui!');
     }

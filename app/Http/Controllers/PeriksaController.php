@@ -130,8 +130,11 @@ class PeriksaController extends Controller
         ])->where('posyandu_id', session('posyandu_id'))->findOrFail($balita_id);
 
         return response()->json([
-            'periksa' => $balita->periksa->map(fn($p) => [
+            'jk'        => $balita->jk,
+            'tgl_lahir' => $balita->tgl_lahir,
+            'periksa'   => $balita->periksa->map(fn($p) => [
                 'tanggal'      => $p->tanggal_periksa,
+                'umur_bulan'   => $p->umur_bulan,
                 'berat_badan'  => $p->berat_badan,
                 'tinggi_badan' => $p->tinggi_badan,
                 'status_gizi'  => $p->status_gizi,

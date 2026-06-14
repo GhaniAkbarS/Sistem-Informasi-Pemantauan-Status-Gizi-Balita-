@@ -17,18 +17,26 @@ class VitaminAController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'balita_id'          => 'required|exists:sp_balita,id',
-            'jenis_kapsul'       => 'required',
-            'bulan_pemberian'    => 'required',
-            'tahun_pemberian'    => 'required|digits:4',
-            'tanggal_pemberian'  => 'required|date',
+            'balita_id'         => 'required|exists:sp_balita,id',
+            'jenis_kapsul'      => 'required',
+            'bulan_pemberian'   => 'required',
+            'tahun_pemberian'   => 'required|digits:4',
+            'tanggal_pemberian' => 'required|date',
+        ], [
+            'balita_id.required'         => 'Nama anak tidak boleh kosong.',
+            'jenis_kapsul.required'      => 'Jenis kapsul tidak boleh kosong.',
+            'bulan_pemberian.required'   => 'Bulan pemberian tidak boleh kosong.',
+            'tahun_pemberian.required'   => 'Tahun pemberian tidak boleh kosong.',
+            'tahun_pemberian.digits'     => 'Tahun pemberian harus 4 digit (contoh: 2025).',
+            'tanggal_pemberian.required' => 'Tanggal pemberian tidak boleh kosong.',
+            'tanggal_pemberian.date'     => 'Format tanggal pemberian tidak valid.',
         ]);
 
         VitaminA::create($request->only([
             'balita_id', 'jenis_kapsul', 'bulan_pemberian', 'tahun_pemberian', 'tanggal_pemberian'
         ]));
 
-        return redirect()->route('vitamina.create')->with('success', 'Data Vitamin A berhasil disimpan.');
+        return redirect()->route('vitamina.index')->with('success', 'Data Vitamin A berhasil disimpan.');
     }
 
     public function index()

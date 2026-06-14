@@ -50,7 +50,7 @@
 
     <!-- Nav Item - Imunisasi -->
     <li class="nav-item {{ request()->routeIs('imunisasi.*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('imunisasi.create') }}">
+        <a class="nav-link" href="{{ route('imunisasi.index') }}">
             <i class="fas fa-fw fa-syringe"></i>
             <span>Imunisasi</span>
         </a>
@@ -58,7 +58,7 @@
 
     <!-- Nav Item - Vitamin A -->
     <li class="nav-item {{ request()->routeIs('vitamina.*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('vitamina.create') }}">
+        <a class="nav-link" href="{{ route('vitamina.index') }}">
             <i class="fas fa-fw fa-capsules"></i>
             <span>Vitamin A</span>
         </a>
@@ -78,13 +78,6 @@
         <a class="nav-link" href="{{ route('laporan.index') }}">
             <i class="fas fa-fw fa-file-alt"></i>
             <span>Laporan</span></a>
-    </li>
-
-    <!-- Nav Item - Rujukan -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-hospital"></i>
-            <span>Rujukan</span></a>
     </li>
 
     @if(Auth::user()->role == 'admin')

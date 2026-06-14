@@ -37,21 +37,22 @@
                             <label class="form-label">Umur (Bulan)</label>
                             <input type="number" id="umur" name="umur" class="form-control" value="{{ old('umur', $balita->umur) }}" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nama Orang Tua</label>
-                            <input type="text" name="nama_ortu" class="form-control" value="{{ old('nama_ortu', $balita->nama_ortu) }}" required>
-                        </div>
+                        
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">Hubungkan ke Akun Orang Tua <small class="text-muted">(opsional)</small></label>
-                            <select name="user_id" class="form-select">
-                                <option value="">-- Belum dihubungkan --</option>
+                            <label class="form-label d-block">Pilih Akun Orang Tua</label>
+                            <select name="user_id" class="custom-select w-100">
+                                <option value="">-- Pilih Orang Tua --</option>
                                 @foreach($orangTuas as $ortu)
                                     <option value="{{ $ortu->id }}" {{ $balita->user_id == $ortu->id ? 'selected' : '' }}>
                                         {{ $ortu->name }} ({{ $ortu->username }})
                                     </option>
                                 @endforeach
                             </select>
+                            <small class="form-hint text-muted">
+                                Orang tua belum terdaftar? <a href="{{ route('ortu.create') }}">Daftarkan di sini</a>
+                            </small>
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tinggi Badan (cm)</label>
                             <input type="number" step="0.1" name="tinggi_badan" class="form-control" value="{{ old('tinggi_badan', $balita->tinggi_badan) }}" required>

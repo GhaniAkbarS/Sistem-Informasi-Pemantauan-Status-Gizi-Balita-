@@ -40,13 +40,16 @@
 
                                 <!-- Jenis Kelamin -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Jenis Kelamin</label>
-                                    <select name="jk" class="form-select" required>
-                                        <option value="">Pilih</option>
-                                        <option value="L">Laki-laki</option>
-                                        <option value="P">Perempuan</option>
-                                    </select>
+                                    <div class="mb-3">
+                                        <label for="jk" class="form-label d-block">Jenis Kelamin</label>
+                                        <select id="jk" name="jk" class="custom-select w-100" required>
+                                            <option value="">Pilih</option>
+                                            <option value="L">Laki-laki</option>
+                                            <option value="P">Perempuan</option>
+                                        </select>
+                                    </div>
                                 </div>
+
 
                                 <!-- Tanggal Lahir -->
                                 <div class="col-md-6">

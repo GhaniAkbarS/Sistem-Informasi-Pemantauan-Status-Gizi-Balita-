@@ -8,10 +8,7 @@
                     <h4 class="m-0 font-weight-bold">Data Pemeriksaan</h4>
                     <p class="m-0" style="opacity: 0.8;">{{ session('posyandu_nama') }}</p>
                 </div>
-                <div class="text-right px-3">
-                    <p class="m-0"><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
-                    <p class="m-0" style="opacity: 0.8;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
-                </div>
+                
             </div>
         </div>
 

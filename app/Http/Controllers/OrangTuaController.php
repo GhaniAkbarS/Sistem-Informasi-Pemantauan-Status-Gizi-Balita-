@@ -21,12 +21,15 @@ class OrangTuaController extends Controller
         // Ascending untuk grafik (lama → baru)
         $riwayat = $anak->periksa()->orderBy('tanggal_periksa', 'asc')->get();
 
-        // Data untuk Chart.js
-        $chartLabels = $riwayat->map(fn($p) => \Carbon\Carbon::parse($p->tanggal_periksa)->format('M Y'));
-        $chartBB     = $riwayat->pluck('berat_badan');
-        $chartTB     = $riwayat->pluck('tinggi_badan');
+        // Hitung umur otomatis (standar Buku KIA): selisih tgl_lahir vs tanggal_periksa
+        $chartLabels = $riwayat->map(
+            fn($p) => \Carbon\Carbon::parse($anak->tgl_lahir)->diffInMonths($p->tanggal_periksa)
+        );
+        $chartUmur = $chartLabels;
+        $chartBB   = $riwayat->pluck('berat_badan');
+        $chartTB   = $riwayat->pluck('tinggi_badan');
 
-        return view('pages.ortu.detail', compact('anak', 'riwayat', 'chartLabels', 'chartBB', 'chartTB'));
+        return view('pages.ortu.detail', compact('anak', 'riwayat', 'chartLabels', 'chartUmur', 'chartBB', 'chartTB'));
     }
 
 

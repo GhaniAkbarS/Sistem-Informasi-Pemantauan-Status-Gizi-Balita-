@@ -42,11 +42,19 @@
               <div class="mb-3">
                 <label for="name" class="form-label">Nama Lengkap</label>
                 <input type="text" id="name" name="name" class="form-control" placeholder="Nama Lengkap" required>
+                @error('name')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
               </div>
+
               <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required style="text-transform: lowercase;">
+                @error('username')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
               </div>
+
               <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="input-group input-group-flat">
@@ -60,17 +68,26 @@
                       </svg>
                     </a>
                   </span>
+                  @error('password')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                  @enderror
                 </div>
               </div>
+
               <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
-                <select id="role" name="role" class="form-select" required>
+                <select id="role" name="role"
+                  class="form-select @error('role') is-invalid @enderror" required>
                   <option value="">Pilih Role</option>
-                  <option value="admin">Admin</option>
-                  <option value="kader">Petugas/kader</option>
-                  <option value="orang_tua">Orang Tua</option>
+                  <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Posyandu</option>
+                  <option value="kader" {{ old('role') == 'kader' ? 'selected' : '' }}>Petugas/kader</option>
+                  <option value="orang_tua" {{ old('role') == 'orang_tua' ? 'selected' : '' }}>Orang Tua</option>
                 </select>
+                @error('role')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
               </div>
+
               <div class="mb-3">
                   <label for="posyandu_id" class="form-label">Posyandu</label>
                   <select id="posyandu_id" name="posyandu_id" class="form-select" required>
@@ -97,9 +114,10 @@
     <script src="{{ asset('tabler/js/tabler.min.js') }}" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        // Toggle password visibility
         const toggleBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
-        
+
         if (toggleBtn && passwordInput) {
           toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -108,7 +126,87 @@
             this.classList.toggle('text-primary');
           });
         }
+
+        // Validasi form sebelum submit
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (e) {
+          let isValid = true;
+
+          const fields = [
+            { id: 'name',         label: 'Nama Lengkap',  type: 'input'  },
+            { id: 'username',     label: 'Username',       type: 'input'  },
+            { id: 'password',     label: 'Password',       type: 'input'  },
+            { id: 'role',         label: 'Role',           type: 'select' },
+            { id: 'posyandu_id',  label: 'Posyandu',       type: 'select' },
+          ];
+
+          fields.forEach(function (field) {
+            const input = document.getElementById(field.id);
+            const errorId = 'error-' + field.id;
+            let errorEl = document.getElementById(errorId);
+
+            // Hapus pesan error lama
+            if (errorEl) errorEl.remove();
+            input.classList.remove('is-invalid');
+
+            const value = input.value.trim();
+            if (!value) {
+              isValid = false;
+              input.classList.add('is-invalid');
+
+              const div = document.createElement('div');
+              div.id = errorId;
+              div.className = 'invalid-feedback d-block';
+              div.textContent = field.label + ' tidak boleh kosong.';
+
+              // Untuk password yang ada di dalam input-group, pasang di parent .mb-3
+              if (field.id === 'password') {
+                input.closest('.mb-3').appendChild(div);
+              } else {
+                input.parentNode.appendChild(div);
+              }
+            } else if (field.id === 'username' && /\s/.test(input.value)) {
+              // Cek spasi di username
+              isValid = false;
+              input.classList.add('is-invalid');
+
+              const div = document.createElement('div');
+              div.id = errorId;
+              div.className = 'invalid-feedback d-block';
+              div.textContent = 'Username tidak boleh mengandung spasi.';
+              input.parentNode.appendChild(div);
+            }
+          });
+
+          if (!isValid) e.preventDefault();
+        });
+
+        // Hapus error saat user mulai mengisi
+        document.querySelectorAll('input, select').forEach(function (el) {
+          el.addEventListener('change', function () {
+            this.classList.remove('is-invalid');
+            const errorEl = document.getElementById('error-' + this.id);
+            if (errorEl) errorEl.remove();
+          });
+          el.addEventListener('input', function () {
+            this.classList.remove('is-invalid');
+            const errorEl = document.getElementById('error-' + this.id);
+            if (errorEl) errorEl.remove();
+          });
+        });
+
+        // Blokir spasi di username secara langsung (real-time)
+        const usernameInput = document.getElementById('username');
+        if (usernameInput) {
+          usernameInput.addEventListener('keydown', function (e) {
+            if (e.key === ' ') e.preventDefault();
+          });
+          usernameInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\s/g, '').toLowerCase();
+          });
+        }
       });
     </script>
+
   </body>
 </html>

@@ -39,10 +39,59 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a href="{{ route('balita.index') }}" class="btn btn-link link-secondary">Batal</a>
+                    <a href="{{ route('periksa.index') }}" class="btn btn-link link-secondary">Batal</a>
                     <button type="submit" class="btn btn-primary ms-auto">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', function (e) {
+                let isValid = true;
+
+                const fields = [
+                    { name: 'tgl_periksa',  label: 'Tanggal Periksa' },
+                    { name: 'tinggi_badan', label: 'Tinggi Badan'     },
+                    { name: 'berat_badan',  label: 'Berat Badan'      },
+                ];
+
+                fields.forEach(function (field) {
+                    const input   = document.querySelector(`[name="${field.name}"]`);
+                    const errorId = 'error-' + field.name;
+                    const oldErr  = document.getElementById(errorId);
+                    if (oldErr) oldErr.remove();
+                    input.classList.remove('is-invalid');
+
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('is-invalid');
+
+                        const div = document.createElement('div');
+                        div.id        = errorId;
+                        div.className = 'invalid-feedback d-block';
+                        div.textContent = field.label + ' tidak boleh kosong.';
+                        input.closest('.mb-3').appendChild(div);
+                    }
+                });
+
+                if (!isValid) e.preventDefault();
+            });
+
+            // Hapus error saat user mengisi
+            document.querySelectorAll('input[name="tgl_periksa"], input[name="tinggi_badan"], input[name="berat_badan"]').forEach(function (el) {
+                ['change', 'input'].forEach(function (evt) {
+                    el.addEventListener(evt, function () {
+                        this.classList.remove('is-invalid');
+                        const err = document.getElementById('error-' + this.name);
+                        if (err) err.remove();
+                    });
+                });
+            });
+        });
+    </script>
+
 </x-app-layout>

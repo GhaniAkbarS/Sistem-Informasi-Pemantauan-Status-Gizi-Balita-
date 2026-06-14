@@ -8,13 +8,16 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\ImunisasiController;
 use App\Http\Controllers\VitaminAController;
+use App\Http\Controllers\UsabilityController;
 use Carbon\Carbon;
 
-// ─── Route Publik (Hanya untuk tamu/belum login) ─────────────────────────
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [UserController::class, 'login'])->name('login');
     Route::post('/login', [UserController::class, 'doLogin'])->name('login.post');
+    Route::get('/register', [UserController::class, 'register'])->name('register');
+    Route::post('/register', [UserController::class, 'doRegister'])->name('register.post');
 });
+
 
 // Logout harus bisa diakses saat sudah login
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
@@ -32,7 +35,7 @@ Route::middleware(['auth', 'checkRole:orang_tua'])->group(function () {
 });
 
 
-// ─── Route Terproteksi (Harus login + punya posyandu) ─────────────────────────
+// Route Terproteksi (Harus login + punya posyandu)
 Route::middleware(['auth', 'checkPosyandu'])->group(function () {
 
     // Kelola Akun Orang Tua (oleh Kader)
@@ -151,3 +154,12 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
     Route::get('/laporan/cetak/vitamina',  [LaporanController::class, 'cetakVitaminA'])->name('laporan.cetak.vitamina');
 
 });
+
+// Usability Testing
+Route::get('/usability/start',        [UsabilityController::class, 'start'])->name('usability.start');
+Route::post('/usability/start',       [UsabilityController::class, 'doStart'])->name('usability.doStart');
+Route::post('/usability/log',         [UsabilityController::class, 'logEvent'])->name('usability.log');
+Route::post('/usability/task-done',   [UsabilityController::class, 'completeTask'])->name('usability.taskDone');
+Route::get('/usability/end',          [UsabilityController::class, 'end'])->name('usability.end');
+Route::get('/usability/report/{token}', [UsabilityController::class, 'report'])->name('usability.report');
+Route::get('/usability',              [UsabilityController::class, 'index'])->name('usability.index');

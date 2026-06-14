@@ -38,6 +38,12 @@
                         <span class="badge bg-primary ms-1" id="badge-vitamin">0</span>
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-grafik" data-bs-toggle="tab"
+                        data-bs-target="#tab-grafik-pane" type="button" role="tab">
+                        📊 Grafik
+                    </button>
+                </li>
             </ul>
 
             {{-- Tab Content --}}
@@ -94,6 +100,27 @@
                                 <tr><td colspan="2" class="text-center text-muted py-3">Belum ada data vitamin A</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                {{-- Tab Grafik Pertumbuhan --}}
+                <div class="tab-pane fade" id="tab-grafik-pane" role="tabpanel">
+                    <div class="mt-2 mb-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                            <small class="fw-bold text-muted">Filter Umur (BB/U & TB/U):</small>
+                            <input type="number" id="kaderFilterMin" class="form-control form-control-sm" style="width:68px" placeholder="Min" min="0" max="60">
+                            <span class="text-muted">–</span>
+                            <input type="number" id="kaderFilterMax" class="form-control form-control-sm" style="width:68px" placeholder="Max" min="0" max="60">
+                            <span class="text-muted small">bulan</span>
+                            <button class="btn btn-xs btn-primary px-2" onclick="kaderApplyFilter()">Terapkan</button>
+                            <button class="btn btn-xs btn-secondary px-2" onclick="kaderResetFilter()">Reset</button>
+                        </div>
+                        <p class="small fw-semibold text-muted mb-1">📈 Berat Badan Menurut Umur (BB/U)</p>
+                        <canvas id="grafikBBU-kader" height="110"></canvas>
+                        <p class="small fw-semibold text-muted mt-3 mb-1">📏 Tinggi Badan Menurut Umur (TB/U)</p>
+                        <canvas id="grafikTBU-kader" height="110"></canvas>
+                        <p class="small fw-semibold text-muted mt-3 mb-1">⚖️ Berat Badan Menurut Panjang Badan (BB/PB)</p>
+                        <canvas id="grafikBBPB-kader" height="110"></canvas>
                     </div>
                 </div>
 

@@ -35,6 +35,7 @@ class UserController extends Controller
 
     public function doLogin(Request $request)
     {
+        $request->merge(['username' => strtolower($request->username)]);
         $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -61,12 +62,22 @@ class UserController extends Controller
 
     public function doRegister(Request $request)
     {
+        $request->merge(['username' => strtolower($request->username)]);
         $request->validate([
             'name'        => 'required|string|max:255',
-            'username'    => 'required|string|unique:sp_users,username',
+            'username'    => 'required|string|regex:/^\S+$/|unique:sp_users,username',
             'password'    => 'required|string|min:4',
             'role'        => 'required',
             'posyandu_id' => 'required|exists:sp_posyandu,id', // ← validasi posyandu
+        ], [
+            'name.required'        => 'Nama Lengkap tidak boleh kosong.',
+            'username.required'    => 'Username tidak boleh kosong.',
+            'username.regex'       => 'Username ini sudah digunakan, silakan pilih yang lain.',
+            'password.required'    => 'Password tidak boleh kosong.',
+            'password.min'         => 'Password minimal 4 karakter.',
+            'role.required'        => 'Role tidak boleh kosong.',
+            'posyandu_id.required' => 'Posyandu tidak boleh kosong.',
+            'posyandu_id.exists'   => 'Posyandu yang dipilih tidak valid.',
         ]);
 
         User::create([

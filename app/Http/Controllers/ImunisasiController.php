@@ -27,7 +27,7 @@ class ImunisasiController extends Controller
             'balita_id', 'nama_vaksin', 'tanggal_pemberian', 'keterangan'
         ]));
 
-        return redirect()->route('imunisasi.create')->with('success', 'Data imunisasi berhasil disimpan.');
+        return redirect()->route('imunisasi.index')->with('success', 'Data imunisasi berhasil disimpan.');
     }
 
     public function index()

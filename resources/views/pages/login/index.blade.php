@@ -24,7 +24,7 @@
             <div class="container-tight">
               <div class="text-center mb-4">
                 <a href="." class="navbar-brand navbar-brand-autodark">
-                  <h2 class="fw-bold text-primary">SiGizi | Sistem Pemantauan Gizi Balita</h2>
+                  <h2 class="fw-bold text-primary">SipGizi | Sistem Pendeteksi Gizi Balita</h2>
                 </a>
               </div>
               <div class="card card-md">
@@ -49,7 +49,7 @@
                     @csrf
                     <div class="mb-3">
                       <label for="username" class="form-label">Username</label>
-                      <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan username" required>
+                      <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan username" required style="text-transform: lowercase;">
                     </div>
                     <div class="mb-2">
                       <label for="password" class="form-label">Password</label>
@@ -72,6 +72,9 @@
                   </form>
                 </div>
               </div>
+              <div class="text-center text-secondary mt-3">
+                Belum punya akun? <a href="{{ route('register') }}" tabindex="-1">Daftar disini</a>
+              </div>
             </div>
           </div>
           <div class="col-lg d-none d-lg-block">
@@ -83,6 +86,7 @@
     <script src="{{ asset('tabler/js/tabler.min.js') }}" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        // Toggle password visibility
         const toggleBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
         
@@ -94,7 +98,53 @@
             this.classList.toggle('text-primary');
           });
         }
+
+        // Validasi form sebelum submit
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (e) {
+          let isValid = true;
+
+          const fields = [
+            { id: 'username', label: 'Username' },
+            { id: 'password', label: 'Password' },
+          ];
+
+          fields.forEach(function (field) {
+            const input = document.getElementById(field.id);
+            const errorId = 'error-' + field.id;
+            let errorEl = document.getElementById(errorId);
+
+            // Hapus pesan error lama
+            if (errorEl) errorEl.remove();
+
+            if (!input.value.trim()) {
+              isValid = false;
+              input.classList.add('is-invalid');
+
+              // Buat elemen pesan error
+              const div = document.createElement('div');
+              div.id = errorId;
+              div.className = 'invalid-feedback d-block';
+              div.textContent = field.label + ' tidak boleh kosong.';
+              input.closest('.mb-3, .mb-2').appendChild(div);
+            } else {
+              input.classList.remove('is-invalid');
+            }
+          });
+
+          if (!isValid) e.preventDefault();
+        });
+
+        // Hapus error saat user mulai mengetik
+        document.querySelectorAll('input').forEach(function (input) {
+          input.addEventListener('input', function () {
+            this.classList.remove('is-invalid');
+            const errorEl = document.getElementById('error-' + this.id);
+            if (errorEl) errorEl.remove();
+          });
+        });
       });
     </script>
+
   </body>
 </html>
