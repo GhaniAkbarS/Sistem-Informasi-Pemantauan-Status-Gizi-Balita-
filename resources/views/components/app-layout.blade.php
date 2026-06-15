@@ -88,8 +88,8 @@
             #wrapper .navbar-nav.sidebar {
                 position: fixed !important;
                 top: 0 !important;
-                left: -260px !important;
-                width: 250px !important;
+                left: -280px !important;
+                width: 270px !important;
                 height: 100vh !important;
                 z-index: 1050 !important;
                 transition: left 0.28s ease !important;
@@ -110,6 +110,63 @@
                 margin-left: 0 !important;
                 width: 100% !important;
                 min-width: 0 !important;
+            }
+        }
+
+        /* ── Perbaikan nav item: ikon + teks sejajar horizontal ── */
+        @media (max-width: 767.98px) {
+            /* Setiap nav-link tampil row, bukan kolom */
+            #wrapper .navbar-nav.sidebar .nav-item .nav-link {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                text-align: left !important;
+                padding: 12px 16px !important;
+                min-width: 0 !important;
+            }
+            /* Ikon: ukuran wajar, margin kanan */
+            #wrapper .navbar-nav.sidebar .nav-item .nav-link i {
+                font-size: 15px !important;
+                width: 20px !important;
+                margin-right: 10px !important;
+                text-align: center !important;
+                flex-shrink: 0 !important;
+            }
+            /* Teks: satu baris penuh, tidak dipotong */
+            #wrapper .navbar-nav.sidebar .nav-item .nav-link span {
+                display: inline !important;
+                font-size: 13px !important;
+                opacity: 1 !important;
+                white-space: nowrap !important;
+                flex-shrink: 1 !important;
+            }
+            /* Heading section (MENU UTAMA, LAINNYA) */
+            #wrapper .navbar-nav.sidebar .sidebar-heading {
+                text-align: left !important;
+                padding: 8px 20px !important;
+                font-size: 11px !important;
+            }
+            /* Brand atas sidebar: sejajar kiri */
+            #wrapper .navbar-nav.sidebar .sidebar-brand {
+                padding: 16px 20px !important;
+                justify-content: flex-start !important;
+            }
+            #wrapper .navbar-nav.sidebar .sidebar-brand-icon {
+                margin-right: 10px !important;
+                transform: none !important;
+            }
+            #wrapper .navbar-nav.sidebar .sidebar-brand-text {
+                display: inline !important;
+                font-size: 15px !important;
+            }
+            /* Tombol toggle sidebar (collapse button) — sembunyikan di mobile */
+            #wrapper .navbar-nav.sidebar #sidebarToggle {
+                display: none !important;
+            }
+            /* Info user + logout di bawah sidebar */
+            #wrapper .navbar-nav.sidebar .text-center.px-3 {
+                text-align: left !important;
+                padding: 12px 20px !important;
             }
         }
     </style>
