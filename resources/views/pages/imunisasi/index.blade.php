@@ -6,7 +6,19 @@
                     <h4 class="m-0 font-weight-bold">Data Imunisasi</h4>
                     <p class="m-0" style="opacity: 0.8;">{{ session('posyandu_nama') }}</p>
                 </div>
-                
+                @if(auth()->user()->role === 'orang_tua')
+                <div class="px-3">
+                    <a href="{{ route('ortu.dashboard') }}" class="btn btn-light btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M5 12l14 0"/>
+                            <path d="M5 12l6 6"/>
+                            <path d="M5 12l6 -6"/>
+                        </svg>
+                        Kembali ke Portal
+                    </a>
+                </div>
+                @endif
             </div>
         </div>
 
@@ -15,10 +27,12 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">Daftar Imunisasi</h3>
-                        <a href="{{ route('imunisasi.create') }}" class="btn btn-primary btn-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14"/><path d="M5 12l14 0"/></svg>
-                            Tambah Data
-                        </a>
+                        @if(auth()->user()->role !== 'orang_tua')
+                            <a href="{{ route('imunisasi.create') }}" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14"/><path d="M5 12l14 0"/></svg>
+                                Tambah Data
+                            </a>
+                        @endif
                     </div>
 
                     @if(session('success'))

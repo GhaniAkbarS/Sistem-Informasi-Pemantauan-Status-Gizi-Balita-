@@ -1,7 +1,10 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard.index') }}">
+     
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" 
+    href="{{ Auth::user()->role == 'orang_tua' ? 'javascript:void(0)' : route('dashboard.index') }}"
+    style="{{ Auth::user()->role == 'orang_tua' ? 'cursor: default; pointer-events: none;' : '' }}">        
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-baby"></i>
         </div>

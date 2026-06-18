@@ -3,6 +3,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Dashboard - Posyandu Cendrawasih</title>
-
+    <title>
+        Dashboard - {{ auth()->user()->posyandu->nama_posyandu ?? 'Posyandu' }}
+    </title>
     <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -119,22 +119,50 @@
     let kaderWho = { bbu: null, tbu: null, bbpb: null };
     let kaderChild = { bbu: null, tbu: null, bbpb: null };
 
-    function buildKaderWhoChart(ctxId, whoData, childData, labels, childLabel, childColor, xTitle, yTitle) {
-        const datasets = [
-            { label: '< -3 SD (Gizi Buruk)',                   data: whoData.neg3, borderColor:'rgba(220,53,69,0.75)',  borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
-            { label: '-3 SD s.d. < -2 SD (Gizi Kurang)',       data: whoData.neg2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
-            { label: '-2 SD s.d. +1 SD (Gizi Baik)',           data: whoData.med,  borderColor:'rgba(40,167,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
-            { label: '+1 SD s.d. +2 SD (Berisiko Gizi Lebih)', data: whoData.pos2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
-            { label: '> +3 SD (Obesitas)',                      data: whoData.pos3, borderColor:'rgba(220,53,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
-            { label: childLabel, data: childData, borderColor:childColor, borderWidth:2.5, pointRadius:5, pointHoverRadius:8, fill:false, spanGaps:false, tension:0 },
-        ];
+    function buildKaderWhoChart(ctxId, whoData, childData, labels, childLabel, childColor, xTitle, yTitle, chartType) {
+        let datasets;
+        if (chartType === 'bbu') {
+            datasets = [
+                { label: '< -3 SD (Berat Badan Sangat Kurang)',          data: whoData.neg3, borderColor:'rgba(220,53,69,0.75)',  borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '-3 SD s.d. < -2 SD (Berat Badan Kurang)',      data: whoData.neg2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '-2 SD s.d. +1 SD (Berat Badan Normal)',        data: whoData.med,  borderColor:'rgba(40,167,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '> +1 SD (Risiko Berat Badan Lebih)',           data: whoData.pos2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '',                                               data: whoData.pos3, borderColor:'rgba(220,53,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: childLabel, data: childData, borderColor:childColor, borderWidth:2.5, pointRadius:5, pointHoverRadius:8, fill:false, spanGaps:false, tension:0 },
+            ];
+        } else if (chartType === 'tbu') {
+            datasets = [
+                { label: '< -3 SD (Sangat Pendek / Severely Stunted)',   data: whoData.neg3, borderColor:'rgba(220,53,69,0.75)',  borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '-3 SD s.d. < -2 SD (Pendek / Stunted)',        data: whoData.neg2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '-2 SD s.d. +3 SD (Normal)',                    data: whoData.med,  borderColor:'rgba(40,167,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '',                                               data: whoData.pos2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '> +3 SD (Tinggi)',                              data: whoData.pos3, borderColor:'rgba(220,53,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: childLabel, data: childData, borderColor:childColor, borderWidth:2.5, pointRadius:5, pointHoverRadius:8, fill:false, spanGaps:false, tension:0 },
+            ];
+        } else {
+            // BB/PB - tetap seperti semula
+            datasets = [
+                { label: '< -3 SD (Gizi Buruk)',                          data: whoData.neg3, borderColor:'rgba(220,53,69,0.75)',  borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '-3 SD s.d. < -2 SD (Gizi Kurang)',              data: whoData.neg2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '-2 SD s.d. +1 SD (Gizi Baik)',                  data: whoData.med,  borderColor:'rgba(40,167,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '+1 SD s.d. +2 SD (Berisiko Gizi Lebih)',        data: whoData.pos2, borderColor:'rgba(255,140,0,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: '> +3 SD (Obesitas)',                             data: whoData.pos3, borderColor:'rgba(220,53,69,0.75)', borderWidth:1.5, pointRadius:0, fill:false, tension:0.3 },
+                { label: childLabel, data: childData, borderColor:childColor, borderWidth:2.5, pointRadius:5, pointHoverRadius:8, fill:false, spanGaps:false, tension:0 },
+            ];
+        }
         return new Chart(document.getElementById(ctxId).getContext('2d'), {
             type: 'line',
             data: { labels, datasets },
             options: {
                 responsive: true,
                 interaction: { intersect: false, mode: 'index' },
-                plugins: { legend: { position: 'bottom', labels: { font:{size:10}, padding:8, usePointStyle:true } } },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font:{size:10}, padding:8, usePointStyle:true },
+                        filter: function(item) { return item.text !== ''; }
+                    }
+                },
                 scales: {
                     x: { title: { display:true, text:xTitle }, ticks:{ maxTicksLimit:20 } },
                     y: { title: { display:true, text:yTitle }, beginAtZero:false },
@@ -254,9 +282,9 @@
                 if (kaderCharts.tbu)  kaderCharts.tbu.destroy();
                 if (kaderCharts.bbpb) kaderCharts.bbpb.destroy();
 
-                kaderCharts.bbu  = buildKaderWhoChart('grafikBBU-kader',  who_bbu,  cBBU,  monthLabels, 'BB Anak (kg)', 'rgba(78,115,223,1)',  'Umur (Bulan)',        'Berat Badan (kg)');
-                kaderCharts.tbu  = buildKaderWhoChart('grafikTBU-kader',  who_tbu,  cTBU,  monthLabels, 'TB Anak (cm)', 'rgba(28,200,138,1)',  'Umur (Bulan)',        'Tinggi Badan (cm)');
-                kaderCharts.bbpb = buildKaderWhoChart('grafikBBPB-kader', who_bbpb, cBBPB, pbLabels,    'BB Anak (kg)', 'rgba(153,102,255,1)', 'Panjang Badan (cm)', 'Berat Badan (kg)');
+                kaderCharts.bbu  = buildKaderWhoChart('grafikBBU-kader',  who_bbu,  cBBU,  monthLabels, 'BB Anak (kg)', 'rgba(78,115,223,1)',  'Umur (Bulan)',        'Berat Badan (kg)',  'bbu');
+                kaderCharts.tbu  = buildKaderWhoChart('grafikTBU-kader',  who_tbu,  cTBU,  monthLabels, 'TB Anak (cm)', 'rgba(28,200,138,1)',  'Umur (Bulan)',        'Tinggi Badan (cm)', 'tbu');
+                kaderCharts.bbpb = buildKaderWhoChart('grafikBBPB-kader', who_bbpb, cBBPB, pbLabels,    'BB Anak (kg)', 'rgba(153,102,255,1)', 'Panjang Badan (cm)', 'Berat Badan (kg)',  'bbpb');
             });
     });
     // ======= Validasi form kolom kosong =======
