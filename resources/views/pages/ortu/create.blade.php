@@ -6,10 +6,6 @@
                     <h4 class="m-0 font-weight-bold">Daftarkan Akun Orang Tua</h4>
                     <p class="m-0" style="opacity: 0.8;">{{ session('posyandu_nama') }}</p>
                 </div>
-                <div class="text-right px-3">
-                    <p class="m-0"><strong>Kader:</strong> {{ ucfirst(session('user')) }}</p>
-                    <p class="m-0" style="opacity: 0.8;">{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</p>
-                </div>
             </div>
         </div>
 
@@ -46,9 +42,7 @@
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="form-hint text-muted">
-                                    Username akan dibuat otomatis. Password default: <strong>posyandu123</strong>
-                                </small>
+
                             </div>
                         </div>
                         <div class="card-footer text-end">

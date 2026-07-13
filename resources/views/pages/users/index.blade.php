@@ -45,7 +45,7 @@
                     <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                         <thead class="thead-light">
                             <tr>
-                                <th width="5%">#</th>
+                                <th width="5%">No</th>
                                 <th>Nama Lengkap</th>
                                 <th>Username</th>
                                 <th>Role</th>

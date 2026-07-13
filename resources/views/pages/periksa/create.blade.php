@@ -170,6 +170,7 @@
             },
         });
     }
+    
 
     function kaderApplyFilter() {
         const min  = parseInt(document.getElementById('kaderFilterMin').value);

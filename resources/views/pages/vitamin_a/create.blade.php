@@ -19,8 +19,8 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nama Anak</label>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block">Nama Anak</label>
                             <select name="balita_id" class="form-select @error('balita_id') is-invalid @enderror" required>
                                 <option value="">Pilih Anak</option>
                                 @foreach($balitas as $balita)
@@ -31,19 +31,8 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Jenis Kapsul</label>
-                            <select name="jenis_kapsul" class="form-select @error('jenis_kapsul') is-invalid @enderror" required>
-                                <option value="">Pilih Kapsul</option>
-                                <option value="Biru (100.000 IU)" {{ old('jenis_kapsul') == 'Biru (100.000 IU)' ? 'selected' : '' }}>Biru (100.000 IU) — Usia 6-11 bulan</option>
-                                <option value="Merah (200.000 IU)" {{ old('jenis_kapsul') == 'Merah (200.000 IU)' ? 'selected' : '' }}>Merah (200.000 IU) — Usia 12-59 bulan</option>
-                            </select>
-                            @error('jenis_kapsul')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Bulan Pemberian</label>
+                            <label class="form-label d-block">Bulan Pemberian</label>
                             <select name="bulan_pemberian" class="form-select @error('bulan_pemberian') is-invalid @enderror" required>
                                 <option value="">Pilih Bulan</option>
                                 <option value="Februari" {{ old('bulan_pemberian') == 'Februari' ? 'selected' : '' }}>Februari</option>
@@ -54,7 +43,22 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Tahun</label>
+                            <label class="form-label d-block">Jenis Kapsul</label>
+                            <select name="jenis_kapsul" class="form-select @error('jenis_kapsul') is-invalid @enderror" required>
+                                <option value="">Pilih Kapsul</option>
+                                <option value="Biru (100.000 IU)" {{ old('jenis_kapsul') == 'Biru (100.000 IU)' ? 'selected' : '' }}>Biru (100.000 IU) — Usia 6-11 bulan</option>
+                                <option value="Merah (200.000 IU)" {{ old('jenis_kapsul') == 'Merah (200.000 IU)' ? 'selected' : '' }}>Merah (200.000 IU) — Usia 12-59 bulan</option>
+                            </select>
+                            @error('jenis_kapsul')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                    </div>
+                    {{-- Baris 2: Tahun & Tanggal Pemberian --}}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Tahun</label>
                             <input type="number" name="tahun_pemberian"
                                 class="form-control @error('tahun_pemberian') is-invalid @enderror"
                                 value="{{ old('tahun_pemberian', date('Y')) }}"
@@ -63,8 +67,8 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Tanggal Pemberian</label>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label d-block">Tanggal Pemberian</label>
                             <input type="date" name="tanggal_pemberian"
                                 class="form-control @error('tanggal_pemberian') is-invalid @enderror"
                                 value="{{ old('tanggal_pemberian', date('Y-m-d')) }}" required>

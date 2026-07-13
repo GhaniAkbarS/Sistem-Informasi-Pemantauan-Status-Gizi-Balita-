@@ -39,8 +39,8 @@
                     <h3 class="card-title">Berat Badan Menurut Umur (BB/U)</h3>
                     <div class="card-options"><span class="badge bg-blue-lt">0 – 60 Bulan</span></div>
                 </div>
-                <div class="card-body">
-                    <canvas id="grafikBBU" height="90"></canvas>
+                <div class="card-body" style="position:relative; height:250px;">
+                    <canvas id="grafikBBU"></canvas>
                 </div>
             </div>
 
@@ -50,8 +50,8 @@
                     <h3 class="card-title">Tinggi Badan Menurut Umur (TB/U)</h3>
                     <div class="card-options"><span class="badge bg-green-lt">0 – 60 Bulan</span></div>
                 </div>
-                <div class="card-body">
-                    <canvas id="grafikTBU" height="90"></canvas>
+                <div class="card-body" style="position:relative; height:250px;">
+                    <canvas id="grafikTBU"></canvas>
                 </div>
             </div>
 
@@ -61,8 +61,8 @@
                     <h3 class="card-title">Berat Badan Menurut Panjang Badan (BB/PB)</h3>
                     <div class="card-options"><span class="badge bg-orange-lt">45 – 110 cm</span></div>
                 </div>
-                <div class="card-body">
-                    <canvas id="grafikBBPB" height="90"></canvas>
+                <div class="card-body" style="position:relative; height:250px;">
+                    <canvas id="grafikBBPB"></canvas>
                 </div>
             </div>
 
@@ -247,30 +247,30 @@
             let datasets;
             if (chartType === 'bbu') {
                 datasets = [
-                    { label: '< -3 SD (Berat Badan Sangat Kurang)',         data: whoData.neg3, borderColor: 'rgba(220,53,69,0.75)',  borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '-3 SD s.d. < -2 SD (Berat Badan Kurang)',     data: whoData.neg2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '-2 SD s.d. +1 SD (Berat Badan Normal)',       data: whoData.med,  borderColor: 'rgba(40,167,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '> +1 SD (Risiko Berat Badan Lebih)',          data: whoData.pos2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '',                                              data: whoData.pos3, borderColor: 'rgba(220,53,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '< -3 SD (Sangat Kurang)',    data: whoData.neg3, borderColor: 'rgba(220,53,69,0.75)',  borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '-3 SD s.d. -2 SD (Kurang)',  data: whoData.neg2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '-2 SD s.d. +1 SD (Normal)',  data: whoData.med,  borderColor: 'rgba(40,167,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '+1 SD s.d. +2 SD (Lebih)',   data: whoData.pos2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '> +3 SD (Obesitas)',         data: whoData.pos3, borderColor: 'rgba(220,53,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
                     { label: childLabel, data: childData, borderColor: childColor, backgroundColor: childColor.replace('1)', '0.12)'), borderWidth: 3, pointRadius: 6, pointHoverRadius: 9, fill: false, spanGaps: false, tension: 0 },
                 ];
             } else if (chartType === 'tbu') {
                 datasets = [
-                    { label: '< -3 SD (Sangat Pendek / Severely Stunted)',  data: whoData.neg3, borderColor: 'rgba(220,53,69,0.75)',  borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '-3 SD s.d. < -2 SD (Pendek / Stunted)',       data: whoData.neg2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '-2 SD s.d. +3 SD (Normal)',                   data: whoData.med,  borderColor: 'rgba(40,167,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '',                                              data: whoData.pos2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '> +3 SD (Tinggi)',                             data: whoData.pos3, borderColor: 'rgba(220,53,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '< -3 SD (Sangat Pendek)',    data: whoData.neg3, borderColor: 'rgba(220,53,69,0.75)',  borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '-3 SD s.d. -2 SD (Pendek)',  data: whoData.neg2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '-2 SD s.d. +3 SD (Normal)',  data: whoData.med,  borderColor: 'rgba(40,167,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '+1 SD s.d. +2 SD (Tinggi)',  data: whoData.pos2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '> +3 SD (Sangat Tinggi)',    data: whoData.pos3, borderColor: 'rgba(220,53,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
                     { label: childLabel, data: childData, borderColor: childColor, backgroundColor: childColor.replace('1)', '0.12)'), borderWidth: 3, pointRadius: 6, pointHoverRadius: 9, fill: false, spanGaps: false, tension: 0 },
                 ];
             } else {
                 // BB/PB
                 datasets = [
-                    { label: '< -3 SD (Gizi Buruk)',                        data: whoData.neg3, borderColor: 'rgba(220,53,69,0.75)',  borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '-3 SD s.d. < -2 SD (Gizi Kurang)',            data: whoData.neg2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '-2 SD s.d. +1 SD (Gizi Baik)',                data: whoData.med,  borderColor: 'rgba(40,167,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '+1 SD s.d. +2 SD (Berisiko Gizi Lebih)',      data: whoData.pos2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
-                    { label: '> +3 SD (Obesitas)',                           data: whoData.pos3, borderColor: 'rgba(220,53,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '< -3 SD (Gizi Buruk)',       data: whoData.neg3, borderColor: 'rgba(220,53,69,0.75)',  borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '-3 SD s.d. -2 SD (Kurang)',  data: whoData.neg2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '-2 SD s.d. +1 SD (Baik)',    data: whoData.med,  borderColor: 'rgba(40,167,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '+1 SD s.d. +2 SD (Lebih)',   data: whoData.pos2, borderColor: 'rgba(255,140,0,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: '> +3 SD (Obesitas)',         data: whoData.pos3, borderColor: 'rgba(220,53,69,0.75)', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
                     { label: childLabel, data: childData, borderColor: childColor, backgroundColor: childColor.replace('1)', '0.12)'), borderWidth: 3, pointRadius: 6, pointHoverRadius: 9, fill: false, spanGaps: false, tension: 0 },
                 ];
             }
@@ -279,11 +279,12 @@
                 data: { labels, datasets },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     interaction: { intersect: false, mode: 'index' },
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: { font: { size: 11 }, padding: 10, usePointStyle: true },
+                            labels: { font: { size: 10 }, padding: 6, usePointStyle: true, boxWidth: 8 },
                             filter: function(item) { return item.text !== ''; },
                         },
                     },
