@@ -11,6 +11,7 @@ class BalitaController extends Controller
     {
         // Hanya tampilkan balita milik posyandu yang sedang login
         $balitas = Balita::where('posyandu_id', session('posyandu_id'))->get();
+        // <-- MENGEMBALIKAN (return) objek View berisi halaman HTML
         return view('pages.balita.index', compact('balitas'));
     }
 
@@ -32,10 +33,25 @@ class BalitaController extends Controller
             'user_id'     => 'required|exists:sp_users,id',
         ]);
 
+        /* =========================================================
+           SLIDE 7: IMPLEMENTASI DEBUGGING
+           (Bisa Anda uncomment dd() di bawah ini untuk screenshot, 
+           lalu comment/hapus lagi agar aplikasi berjalan normal)
+           ========================================================= */
+        // \Illuminate\Support\Facades\Log::info('Mencoba input data balita', $request->all());
+        // dd('Berhenti di sini untuk cek input data:', $request->all());
+
         $orangTua = \App\Models\User::findOrFail($request->user_id);
 
+        $namaBalita = $request->nama;
+
+        /* =========================================================
+           SLIDE 4: IMPLEMENTASI PEMROGRAMAN TERSTRUKTUR (POINTER)
+           Memanggil fungsi reference/pointer untuk mengubah nama
+           ========================================================= */
+        $this->formatNamaBalita($namaBalita);
+
         Balita::create([
-            'nama'         => $request->nama,
             'jk'           => $request->jk,
             'tgl_lahir'    => $request->tgl_lahir,
             'umur'         => $request->umur,
@@ -47,6 +63,16 @@ class BalitaController extends Controller
         ]);
 
         return redirect()->route('balita.index')->with('success', 'Data Balita berhasil ditambahkan!');
+    }
+
+    /**
+     * SLIDE 4: POINTER/REFERENCE
+     * Fungsi Helper dengan POINTER (Reference &)
+     * Mengubah nama menjadi huruf kapital langsung pada memori variabel aslinya.
+     */
+    private function formatNamaBalita(&$nama)
+    {
+        $nama = strtoupper($nama);
     }
 
     public function edit($id)
@@ -83,8 +109,11 @@ class BalitaController extends Controller
             if ($orangTua) $namaOrtu = $orangTua->name;
         }
 
+        $namaBalita = $request->nama;
+        // Gunakan pointer untuk mengubah menjadi uppercase
+        $this->formatNamaBalita($namaBalita);
+
         $balita->update([
-            'nama'         => $request->nama,
             'jk'           => $request->jk,
             'tgl_lahir'    => $request->tgl_lahir,
             'umur'         => $request->umur,
