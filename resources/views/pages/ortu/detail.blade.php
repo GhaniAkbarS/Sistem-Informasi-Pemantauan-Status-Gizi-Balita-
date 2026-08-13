@@ -34,7 +34,7 @@
             </div>
 
             {{-- Grafik BB/U --}}
-            <div class="card mb-4">
+            <div class="card mb-3">
                 <div class="card-header">
                     <h3 class="card-title">Berat Badan Menurut Umur (BB/U)</h3>
                     <div class="card-options"><span class="badge bg-blue-lt">0 – 60 Bulan</span></div>
@@ -224,6 +224,7 @@
 
         // Data anak dari server (umur dihitung otomatis dari tgl_lahir)
         const examUmur = {!! json_encode($chartLabels->values()) !!};
+        const examDates = {!! json_encode($chartDates->values()) !!};
         const examBB   = {!! json_encode($chartBB->values()) !!};
         const examTB   = {!! json_encode($chartTB->values()) !!};
 
@@ -328,6 +329,100 @@
             chart.data.datasets[5].data = child.slice(min, max + 1);
             chart.update();
         }
+
+        // === GRAFIK TREN PERTUMBUHAN ANAK (DUAL AXIS) ===
+        const ctxTrend = document.getElementById('grafikPertumbuhanAnak');
+        if(ctxTrend) {
+            new Chart(ctxTrend.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: examDates,
+                    datasets: [
+                        {
+                            label: 'Berat Badan (kg)',
+                            data: examBB,
+                            borderColor: '#4e73df',
+                            backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#4e73df',
+                            yAxisID: 'y-bb',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Tinggi Badan (cm)',
+                            data: examTB,
+                            borderColor: '#ff9a9e',
+                            backgroundColor: 'rgba(255, 154, 158, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#ff9a9e',
+                            yAxisID: 'y-tb',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: { family: "'Nunito', sans-serif", size: 13 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#5a5c69',
+                            bodyColor: '#5a5c69',
+                            borderColor: '#dddfeb',
+                            borderWidth: 1,
+                            padding: 12
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { family: "'Nunito', sans-serif" } }
+                        },
+                        'y-bb': {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Berat Badan (kg)',
+                                color: '#4e73df',
+                                font: { family: "'Nunito', sans-serif", weight: 'bold' }
+                            },
+                            grid: { borderDash: [5, 5], color: 'rgba(0,0,0,0.05)' }
+                        },
+                        'y-tb': {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Tinggi Badan (cm)',
+                                color: '#ff9a9e',
+                                font: { family: "'Nunito', sans-serif", weight: 'bold' }
+                            },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+        }
+
     </script>
     @endpush
 </x-app-layout>

@@ -86,18 +86,19 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
         $distStunting = $distribusi['Stunting']    ?? 0;
         $totalDist    = $distNormal + $distKurang + $distLebih + $distStunting;
 
-        // Tren pemeriksaan 6 bulan terakhir
-        $trenLabels = [];
-        $trenData   = [];
+        $trenDataNormal = [];
+        $trenDataStunting = [];
         for ($i = 5; $i >= 0; $i--) {
             $bulan        = Carbon::now()->subMonths($i);
             $trenLabels[] = $bulan->locale('id')->translatedFormat('M Y');
-            $trenData[]   = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
+            $baseQuery = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
                                 $q->where('posyandu_id', $posyanduId);
                             })
                             ->whereMonth('tanggal_periksa', $bulan->month)
-                            ->whereYear('tanggal_periksa', $bulan->year)
-                            ->count();
+                            ->whereYear('tanggal_periksa', $bulan->year);
+                            
+            $trenDataNormal[]   = (clone $baseQuery)->whereIn('status_gizi', ['Gizi Baik', 'Gizi Normal'])->count();
+            $trenDataStunting[] = (clone $baseQuery)->whereIn('status_gizi', ['Stunting', 'Sangat Pendek', 'Gizi Kurang'])->count();
         }
 
 
@@ -121,7 +122,8 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
             'distStunting', 
             'totalDist',
             'trenLabels', 
-            'trenData'
+            'trenDataNormal',
+            'trenDataStunting'
         ));
     })->name('dashboard.index');
 

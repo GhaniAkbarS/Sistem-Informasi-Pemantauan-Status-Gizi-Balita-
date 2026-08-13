@@ -60,6 +60,28 @@
             max-width: 120px;
         }
 
+        /* ── Sidebar desktop harus tetap statis di tinggi viewport ── */
+        #wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+        #content-wrapper {
+            flex: 1 1 auto;
+            min-width: 0;
+            width: 100%;
+        }
+        #wrapper .navbar-nav.sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            max-height: 100vh;
+            flex-shrink: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            align-self: flex-start;
+        }
+
         /* ── Overlay gelap saat sidebar terbuka ── */
         #sidebar-overlay {
             display: none;
@@ -168,6 +190,35 @@
                 text-align: left !important;
                 padding: 12px 20px !important;
             }
+        }
+
+        /* ── Card: background putih tegas & font hitam ── */
+        .card {
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+        }
+        .card-body {
+            background-color: #ffffff !important;
+        }
+        .card-header {
+            background-color: #f8f9fa !important;
+        }
+        .card-header .card-title,
+        .card-title {
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+        }
+        .card h5 {
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+        }
+        .card .text-muted {
+            color: #555555 !important;
+            font-weight: 500 !important;
+        }
+        h5 {
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
         }
     </style>
 </head>

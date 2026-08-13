@@ -65,13 +65,10 @@
             max-width: 100%;
             height: auto;
         }
-        
-        /* === RESTORED DASHBOARD STYLES === */
+
+        /* === DASHBOARD STYLES === */
         .alert-box {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
             padding: 15px 20px;
-            border-radius: 8px;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -83,13 +80,11 @@
         }
 
         .alert-content h3 {
-            color: #856404;
             font-size: 16px;
             margin-bottom: 5px;
         }
 
         .alert-content p {
-            color: #856404;
             font-size: 14px;
         }
 
@@ -101,12 +96,8 @@
         }
 
         .stat-card {
-            background: white;
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: transform 0.2s;
-            border-left: 4px solid #4e73df; /* Add Bootstrap Primary Color Accent */
         }
 
         .stat-card:hover {
@@ -123,7 +114,6 @@
 
         .stat-title {
             font-size: 14px;
-            color: #6b7280;
             font-weight: 700;
             text-transform: uppercase;
         }
@@ -136,13 +126,11 @@
         .stat-value {
             font-size: 32px;
             font-weight: 700;
-            color: #5a5c69;
             margin-bottom: 5px;
         }
 
         .stat-subtitle {
             font-size: 13px;
-            color: #858796;
         }
 
         .charts-section {
@@ -159,13 +147,14 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .chart-card h2 {
+        .chart-card h2,
+        .recent-table h2 {
             font-size: 18px;
-            color: #4e73df;
+            color: #2d2d2d;
             margin-bottom: 20px;
             font-weight: 700;
         }
-        
+
         /* Fix table di .recent-table agar scrollable di mobile */
         .recent-table {
             overflow-x: auto;
@@ -287,5 +276,144 @@
                 padding-left: 12px !important;
                 padding-right: 12px !important;
             }
+        }
+
+        /* === TEMA POSYANDU (Soft Pink Light UI) === */
+        body {
+            background-color: #fde8f0 !important;
+        }
+
+        /* Area konten utama – samakan background dengan body (override SB Admin) */
+        html body #wrapper #content-wrapper,
+        html body #wrapper #content-wrapper #content,
+        html body .main-content,
+        #content-wrapper,
+        #content {
+            background-color: #fde8f0 !important;
+        }
+
+        /* Semua card bawaan Bootstrap juga pink */
+        html body .card,
+        .card {
+            background-color: #fde8f0 !important;
+            border-color: rgba(200, 100, 140, 0.15) !important;
+        }
+
+        /* Sidebar / Navbar – samakan dengan warna background halaman */
+        .sidebar.bg-gradient-primary,
+        .navbar-nav.bg-gradient-primary {
+            background: #fde8f0 !important;
+            background-color: #fde8f0 !important;
+            background-image: none !important;
+        }
+
+        /* Teks sidebar (icon, link, heading) jadi hitam/gelap */
+        .navbar-nav.bg-gradient-primary .nav-link,
+        .navbar-nav.bg-gradient-primary .nav-link span,
+        .navbar-nav.bg-gradient-primary .nav-link i,
+        .navbar-nav.bg-gradient-primary .sidebar-brand-text,
+        .navbar-nav.bg-gradient-primary .sidebar-brand-icon,
+        .navbar-nav.bg-gradient-primary .sidebar-heading,
+        .navbar-nav.bg-gradient-primary div,
+        .navbar-nav.bg-gradient-primary p {
+            color: #2d2d2d !important;
+            opacity: 1 !important;
+        }
+        .navbar-nav.bg-gradient-primary .sidebar-divider {
+            border-top-color: rgba(0,0,0,0.15) !important;
+        }
+        .navbar-nav.bg-gradient-primary .nav-item.active .nav-link {
+            background-color: rgba(0,0,0,0.08) !important;
+            color: #1a1a1a !important;
+            border-radius: 8px;
+        }
+
+        /* Banner Dashboard – samakan dengan background halaman */
+        html body .card.bg-primary,
+        .card.bg-primary {
+            background-color: #fde8f0 !important;
+            border-radius: 0 0 15px 15px !important;
+            box-shadow: 0 2px 8px rgba(200, 100, 140, 0.1) !important;
+            border: none !important;
+        }
+        /* Teks di banner jadi hitam */
+        .card.bg-primary h4,
+        .card.bg-primary p {
+            color: #2d2d2d !important;
+            text-shadow: none !important;
+        }
+
+        /* Card Statistik: tetap colorful tapi soft */
+        .stat-card {
+            border-radius: 16px !important;
+            border-left: none !important;
+            border-bottom: 5px solid rgba(0,0,0,0.08);
+        }
+        .stat-card:nth-child(1) { background-color: #f48fb1; } /* Pink Medium */
+        .stat-card:nth-child(2) { background-color: #f9a8d4; } /* Pink Muda */
+        .stat-card:nth-child(3) { background-color: #fbc2eb; } /* Pink Sangat Muda */
+        .stat-card:nth-child(4) { background-color: #f06292; } /* Pink Agak Tua */
+
+        /* Teks di stat card jadi hitam */
+        .stat-card .stat-title,
+        .stat-card .stat-subtitle,
+        .stat-card .stat-value {
+            color: #2d2d2d !important;
+        }
+
+        /* Card Grafik & Tabel: putih bersih di atas bg pink */
+        .chart-card, .recent-table {
+            background: #fff !important;
+            border-radius: 16px !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(200, 100, 140, 0.1) !important;
+        }
+
+        /* Alert Stunting: warna TEGAS merah/kuning – penting & mendesak */
+        .alert-box {
+            background:  #e53e3e!important;
+            border-left: 6px solid  #e53e3e!important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 20px rgba(229, 62, 62, 0.25) !important;
+            animation: pulse-alert 2s ease-in-out infinite;
+        }
+        @keyframes pulse-alert {
+            0%   { box-shadow: 0 4px 20px rgba(229, 62, 62, 0.25); }
+            50%  { box-shadow: 0 4px 28px rgba(229, 62, 62, 0.55); }
+            100% { box-shadow: 0 4px 20px rgba(229, 62, 62, 0.25); }
+        }
+        .alert-content h3 {
+            color: #fff3cd !important;
+            font-weight: 700 !important;
+            font-size: 16px !important;
+        }
+        .alert-content p {
+            color: #744210 !important;
+            font-weight: 500 !important;
+        }
+
+        /* Mobile topbar seragam */
+        .mobile-topbar {
+            background: #f8c8da !important;
+        }
+        .mobile-topbar-brand,
+        .mobile-topbar-user {
+            color: #2d2d2d !important;
+        }
+        .mobile-topbar-toggle {
+            color: #2d2d2d !important;
+        }
+        /* Card Data Anak Ortu - background tegas & font lebih hitam */
+        .card {
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+        }
+        .card h5 {
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+        }
+        .card .text-muted {
+            color: #555555 !important;
+            font-weight: 500 !important;
         }
     </style>

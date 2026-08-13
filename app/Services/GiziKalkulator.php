@@ -5,9 +5,9 @@ namespace App\Services;
 class GiziKalkulator
 {
     /**
-     * Hitung status gizi (standar WHO BB/U dan TB/U)
+     * Hitung status gizi (standar WHO BB/U, TB/U, dan BB/PB)
      * @param float  $bb     Berat badan (kg)
-     * @param float  $tb     Tinggi badan (cm)
+     * @param float  $tb     Tinggi/Panjang badan (cm)
      * @param int    $umur   Umur dalam bulan (0-60)
      * @param string $jk     'L' atau 'P'
      */
@@ -16,13 +16,15 @@ class GiziKalkulator
         $umur   = max(0, min(60, $umur));
         $gender = (strtoupper($jk) === 'L') ? 'L' : 'P';
 
-        $z_bbu = self::hitungZScore($bb, $umur, $gender, 'BBU');
-        $z_tbu = self::hitungZScore($tb, $umur, $gender, 'TBU');
+        $z_bbu  = self::hitungZScore($bb, $umur, $gender, 'BBU');
+        $z_tbu  = self::hitungZScore($tb, $umur, $gender, 'TBU');
+        $z_bbpb = self::hitungZScoreBBPB($bb, $tb, $gender);
 
         return [
-            'status_gizi' => self::tentukanStatus($z_bbu, $z_tbu),
+            'status_gizi' => self::tentukanStatus($z_bbu, $z_tbu, $z_bbpb),
             'z_bbu'       => round($z_bbu, 2),
             'z_tbu'       => round($z_tbu, 2),
+            'z_bbpb'      => round($z_bbpb, 2),
         ];
     }
 
@@ -34,13 +36,41 @@ class GiziKalkulator
         return $sd > 0 ? ($nilai - $median) / $sd : 0;
     }
 
-    private static function tentukanStatus(float $z_bbu, float $z_tbu): string
+    /**
+     * Hitung z-score BB/PB (Berat Badan menurut Panjang/Tinggi Badan).
+     * Indeks tabel: 0 => 45 cm, 65 => 110 cm (sesuai rentang tabel WHO yang dipakai di grafik).
+     */
+    private static function hitungZScoreBBPB(float $bb, float $tb, string $gender): float
     {
-        if ($z_tbu < -2)  return 'Stunting';
-        if ($z_bbu < -3)  return 'Gizi Kurang';   // Gizi Buruk → masuk Gizi Kurang
-        if ($z_bbu < -2)  return 'Gizi Kurang';
-        if ($z_bbu <= 2)  return 'Gizi Normal';    // Gizi Baik → Gizi Normal (sesuai DB)
-        return 'Gizi Lebih';
+        $tabel = self::tabelBBPB($gender);
+        $idx   = (int) round($tb) - 45;
+        $idx   = max(0, min(count($tabel) - 1, $idx));
+
+        [$median, $sd] = $tabel[$idx];
+        return $sd > 0 ? ($bb - $median) / $sd : 0;
+    }
+
+    /**
+     * Menentukan status gizi akhir.
+     *
+     * - Stunting murni dari TB/U (indikator kronis, independen dari berat badan).
+     * - Untuk kurang/lebih gizi, diambil kondisi TERBURUK antara BB/U dan BB/PB,
+     *   supaya status yang tersimpan di database selalu selaras dengan apa yang
+     *   ditampilkan pada kurva pertumbuhan (BB/U, TB/U, maupun BB/PB).
+     */
+    private static function tentukanStatus(float $z_bbu, float $z_tbu, float $z_bbpb): string
+    {
+        if ($z_tbu < -2) return 'Stunting';
+
+        // Ambil z-score yang paling negatif (paling menunjukkan kekurangan gizi)
+        $z_kurang = min($z_bbu, $z_bbpb);
+        // Ambil z-score yang paling positif (paling menunjukkan kelebihan gizi)
+        $z_lebih  = max($z_bbu, $z_bbpb);
+
+        if ($z_kurang < -2) return 'Gizi Kurang';   // mencakup juga kasus severely underweight/wasted (< -3)
+        if ($z_lebih > 2)   return 'Gizi Lebih';
+
+        return 'Gizi Normal';
     }
 
 
@@ -129,6 +159,44 @@ class GiziKalkulator
             52=>[107.8,4.87],53=>[108.5,4.92],54=>[109.2,4.97],55=>[109.8,5.03],
             56=>[110.5,5.08],57=>[111.1,5.13],58=>[111.8,5.18],59=>[112.4,5.23],
             60=>[113.0,5.28],
+        ];
+
+        return $g === 'L' ? $L : $P;
+    }
+
+    // ─── Tabel Referensi WHO BB/PB [median_kg, sd_kg] ───────────────────────
+    // Indeks 0 = panjang/tinggi badan 45 cm, indeks 65 = 110 cm.
+    // Data identik dengan tabel "rawBBPB" yang dipakai pada grafik (JS),
+    // supaya kurva dan status gizi di server selalu selaras (satu sumber data).
+
+    private static function tabelBBPB(string $g): array
+    {
+        $L = [
+            [2.4,0.31],[2.6,0.33],[2.8,0.36],[3.0,0.39],[3.3,0.41],[3.5,0.44],
+            [3.8,0.46],[4.0,0.48],[4.3,0.50],[4.6,0.52],[4.9,0.54],[5.2,0.56],
+            [5.5,0.58],[5.8,0.60],[6.0,0.62],[6.3,0.64],[6.6,0.66],[6.8,0.68],
+            [7.1,0.70],[7.3,0.72],[7.5,0.74],[7.8,0.76],[8.0,0.77],[8.2,0.79],
+            [8.4,0.81],[8.6,0.83],[8.9,0.84],[9.1,0.86],[9.3,0.88],[9.5,0.90],
+            [9.7,0.92],[9.9,0.93],[10.2,0.95],[10.4,0.97],[10.6,0.99],[10.8,1.01],
+            [11.0,1.03],[11.3,1.05],[11.5,1.07],[11.7,1.09],[11.9,1.11],[12.2,1.13],
+            [12.4,1.15],[12.7,1.17],[12.9,1.19],[13.2,1.21],[13.4,1.23],[13.7,1.26],
+            [13.9,1.28],[14.2,1.30],[14.4,1.32],[14.7,1.35],[15.0,1.37],[15.2,1.39],
+            [15.5,1.42],[15.7,1.44],[16.0,1.46],[16.3,1.48],[16.6,1.51],[16.8,1.53],
+            [17.1,1.55],[17.4,1.58],[17.7,1.60],[18.0,1.62],[18.3,1.65],[18.5,1.67],
+        ];
+
+        $P = [
+            [2.5,0.33],[2.6,0.35],[2.8,0.38],[3.0,0.40],[3.2,0.43],[3.4,0.45],
+            [3.7,0.47],[3.9,0.50],[4.2,0.52],[4.5,0.54],[4.7,0.56],[5.0,0.58],
+            [5.3,0.60],[5.6,0.62],[5.9,0.64],[6.1,0.66],[6.4,0.68],[6.6,0.70],
+            [6.9,0.71],[7.1,0.73],[7.3,0.75],[7.5,0.77],[7.7,0.79],[7.9,0.81],
+            [8.1,0.83],[8.3,0.84],[8.5,0.86],[8.7,0.88],[8.9,0.90],[9.2,0.92],
+            [9.4,0.94],[9.6,0.96],[9.8,0.98],[10.0,1.00],[10.3,1.02],[10.5,1.04],
+            [10.7,1.06],[10.9,1.08],[11.2,1.10],[11.4,1.12],[11.6,1.14],[11.8,1.16],
+            [12.1,1.18],[12.3,1.20],[12.6,1.22],[12.8,1.24],[13.1,1.27],[13.3,1.29],
+            [13.6,1.31],[13.8,1.33],[14.1,1.36],[14.4,1.38],[14.6,1.40],[14.9,1.43],
+            [15.2,1.45],[15.4,1.47],[15.7,1.50],[16.0,1.52],[16.2,1.54],[16.5,1.57],
+            [16.8,1.59],[17.1,1.62],[17.3,1.64],[17.6,1.67],[17.9,1.69],[18.2,1.72],
         ];
 
         return $g === 'L' ? $L : $P;

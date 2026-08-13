@@ -25,13 +25,13 @@ class OrangTuaController extends Controller
         $chartLabels = $riwayat->map(
             fn($p) => \Carbon\Carbon::parse($anak->tgl_lahir)->diffInMonths($p->tanggal_periksa)
         );
+        $chartDates = $riwayat->map(
+            fn($p) => \Carbon\Carbon::parse($p->tanggal_periksa)->locale('id')->translatedFormat('F Y')
+        );
         $chartUmur = $chartLabels;
         $chartBB   = $riwayat->pluck('berat_badan');
         $chartTB   = $riwayat->pluck('tinggi_badan');
 
-        return view('pages.ortu.detail', compact('anak', 'riwayat', 'chartLabels', 'chartUmur', 'chartBB', 'chartTB'));
+        return view('pages.ortu.detail', compact('anak', 'riwayat', 'chartLabels', 'chartDates', 'chartUmur', 'chartBB', 'chartTB'));
     }
-
-
-    
 }

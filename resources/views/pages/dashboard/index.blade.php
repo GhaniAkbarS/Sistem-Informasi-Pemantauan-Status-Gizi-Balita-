@@ -89,13 +89,6 @@
                             <span class="status-count">{{ $distStunting }}</span>
                             <span class="status-percentage">{{ $totalDist > 0 ? round($distStunting / $totalDist * 100) : 0 }}%</span>
                         </div>
-                        <div class="status-item">
-                            <div class="status-color" style="background: #3b82f6;"></div>
-                            <span class="status-label">Gizi Lebih</span>
-                            <span class="status-count">{{ $distLebih }}</span>
-                            <span class="status-percentage">{{ $totalDist > 0 ? round($distLebih / $totalDist * 100) : 0 }}%</span>
-                        </div>
-
                         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
                             <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">
                                 <strong>Catatan:</strong> {{ $perluRujukan }} balita memerlukan pemantauan intensif
@@ -169,21 +162,38 @@ var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: {!! json_encode($trenLabels) !!},
-    datasets: [{
-      label: "Total Pemeriksaan",
-      lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
-      borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
-      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
-      data: {!! json_encode($trenData) !!},
-    }],
+    datasets: [
+      {
+        label: "Gizi Normal",
+        lineTension: 0.3,
+        backgroundColor: "rgba(16, 185, 129, 0.08)",
+        borderColor: "rgba(16, 185, 129, 1)",
+        pointRadius: 3,
+        pointBackgroundColor: "rgba(16, 185, 129, 1)",
+        pointBorderColor: "rgba(16, 185, 129, 1)",
+        pointHoverRadius: 3,
+        pointHoverBackgroundColor: "rgba(16, 185, 129, 1)",
+        pointHoverBorderColor: "rgba(16, 185, 129, 1)",
+        pointHitRadius: 10,
+        pointBorderWidth: 2,
+        data: {!! json_encode($trenDataNormal) !!},
+      },
+      {
+        label: "Perlu Perhatian",
+        lineTension: 0.3,
+        backgroundColor: "rgba(239, 68, 68, 0.08)",
+        borderColor: "rgba(239, 68, 68, 1)",
+        pointRadius: 3,
+        pointBackgroundColor: "rgba(239, 68, 68, 1)",
+        pointBorderColor: "rgba(239, 68, 68, 1)",
+        pointHoverRadius: 3,
+        pointHoverBackgroundColor: "rgba(239, 68, 68, 1)",
+        pointHoverBorderColor: "rgba(239, 68, 68, 1)",
+        pointHitRadius: 10,
+        pointBorderWidth: 2,
+        data: {!! json_encode($trenDataStunting) !!},
+      }
+    ],
   },
   options: {
     maintainAspectRatio: false,
