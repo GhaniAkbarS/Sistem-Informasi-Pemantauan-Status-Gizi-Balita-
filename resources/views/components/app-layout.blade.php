@@ -26,7 +26,7 @@
             align-items: center;
             height: 56px;
             padding: 0 16px;
-            background: #fff;
+            background: #f8c8da;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
@@ -193,12 +193,19 @@
         }
 
         /* ── Card: background putih tegas & font hitam ── */
-        .card {
+        .card:not(.bg-primary) {
             background-color: #ffffff !important;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
         }
-        .card-body {
+        .card-body:not(.bg-primary .card-body) {
             background-color: #ffffff !important;
+        }
+        
+        /* Header banner tetap pink – override card-body putih */
+        html body .card.bg-primary,
+        html body .card.bg-primary .card-body {
+            background-color: #fde8f0 !important;
+            background-image: none !important;
         }
         .card-header {
             background-color: #f8f9fa !important;

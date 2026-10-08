@@ -11,8 +11,8 @@
     <!-- Custom Pages CSS (If any) -->
     <style>
         .header {
-            background: white;
-            color: #4e73df;
+            background: #fde8f0;
+            color: #c2185b;
             padding: 20px 30px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             margin-bottom: 25px;
@@ -408,6 +408,11 @@
             background-color: #ffffff !important;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
         }
+        .card:not(.bg-primary) {
+    background-color: #fde8f0  !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
+    border-radius: 16px !important;
+}
         .card h5 {
             font-weight: 700 !important;
             color: #1a1a1a !important;
