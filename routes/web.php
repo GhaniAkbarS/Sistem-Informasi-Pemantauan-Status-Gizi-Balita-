@@ -20,10 +20,14 @@ Route::middleware(['guest'])->group(function () {
 
 
 // Logout harus bisa diakses saat sudah login
-Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth')->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::get('/akun/password', [UserController::class, 'editPassword'])->name('akun.password.edit');
+    Route::put('/akun/password', [UserController::class, 'updatePassword'])->name('akun.password.update');
+});
 
 // Manajemen User (Hanya untuk Admin)
-Route::middleware(['checkRole:admin'])->group(function () {
+Route::middleware(['auth', 'checkPosyandu', 'checkRole:admin'])->group(function () {
     Route::get('/users', [UserController::class, 'userIndex'])->name('users.index');
     Route::delete('/users/{id}', [UserController::class, 'userDestroy'])->name('users.destroy');
 });
@@ -36,7 +40,7 @@ Route::middleware(['auth', 'checkRole:orang_tua'])->group(function () {
 
 
 // Route Terproteksi (Harus login + punya posyandu)
-Route::middleware(['auth', 'checkPosyandu'])->group(function () {
+Route::middleware(['auth', 'checkPosyandu', 'checkRole:admin,kader'])->group(function () {
 
     // Kelola Akun Orang Tua (oleh Kader)
     Route::get('/orang-tua/create', [UserController::class, 'createOrangTua'])->name('ortu.create');
@@ -65,12 +69,12 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
         $giziNormal = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
                                     $q->where('posyandu_id', $posyanduId);
                                 })
-                                ->where('status_gizi', 'Gizi Baik')->count();
+                                ->whereIn('status_gizi', \App\Services\StatusGizi::NORMAL_DATABASE_VALUES)->count();
 
         $perluRujukan = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
                                     $q->where('posyandu_id', $posyanduId);
                                 })
-                                ->whereIn('status_gizi', ['Stunting', 'Gizi Kurang'])->count();
+                                ->whereIn('status_gizi', \App\Services\StatusGizi::PERLU_TINJAU_DATABASE_VALUES)->count();
 
         // Distribusi status gizi
         $distribusi = \App\Models\Periksa::whereHas('balita', function($q) use ($posyanduId) {
@@ -80,7 +84,7 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
                         ->groupBy('status_gizi')
                         ->pluck('total', 'status_gizi');
 
-        $distNormal   = $distribusi['Gizi Baik'] ?? 0;
+        $distNormal   = ($distribusi['Gizi Normal'] ?? 0) + ($distribusi['Gizi Baik'] ?? 0);
         $distKurang   = $distribusi['Gizi Kurang'] ?? 0;
         $distLebih    = $distribusi['Gizi Lebih']  ?? 0;
         $distStunting = $distribusi['Stunting']    ?? 0;
@@ -97,8 +101,8 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
                             ->whereMonth('tanggal_periksa', $bulan->month)
                             ->whereYear('tanggal_periksa', $bulan->year);
                             
-            $trenDataNormal[]   = (clone $baseQuery)->whereIn('status_gizi', ['Gizi Baik', 'Gizi Normal'])->count();
-            $trenDataStunting[] = (clone $baseQuery)->whereIn('status_gizi', ['Stunting', 'Sangat Pendek', 'Gizi Kurang'])->count();
+            $trenDataNormal[]   = (clone $baseQuery)->whereIn('status_gizi', \App\Services\StatusGizi::NORMAL_DATABASE_VALUES)->count();
+            $trenDataStunting[] = (clone $baseQuery)->where('status_gizi', \App\Services\StatusGizi::STUNTING)->count();
         }
 
 
@@ -158,10 +162,12 @@ Route::middleware(['auth', 'checkPosyandu'])->group(function () {
 });
 
 // Usability Testing
-Route::get('/usability/start',        [UsabilityController::class, 'start'])->name('usability.start');
-Route::post('/usability/start',       [UsabilityController::class, 'doStart'])->name('usability.doStart');
-Route::post('/usability/log',         [UsabilityController::class, 'logEvent'])->name('usability.log');
-Route::post('/usability/task-done',   [UsabilityController::class, 'completeTask'])->name('usability.taskDone');
-Route::get('/usability/end',          [UsabilityController::class, 'end'])->name('usability.end');
-Route::get('/usability/report/{token}', [UsabilityController::class, 'report'])->name('usability.report');
-Route::get('/usability',              [UsabilityController::class, 'index'])->name('usability.index');
+Route::middleware('auth')->group(function () {
+    Route::get('/usability/start', [UsabilityController::class, 'start'])->name('usability.start');
+    Route::post('/usability/start', [UsabilityController::class, 'doStart'])->name('usability.doStart');
+    Route::post('/usability/log', [UsabilityController::class, 'logEvent'])->name('usability.log');
+    Route::post('/usability/task-done', [UsabilityController::class, 'completeTask'])->name('usability.taskDone');
+    Route::get('/usability/end', [UsabilityController::class, 'end'])->name('usability.end');
+    Route::get('/usability/report/{token}', [UsabilityController::class, 'report'])->name('usability.report');
+});
+Route::get('/usability', [UsabilityController::class, 'index'])->middleware(['auth', 'checkRole:admin'])->name('usability.index');

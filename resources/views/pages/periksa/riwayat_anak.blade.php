@@ -1,6 +1,6 @@
 {{-- Partial: Riwayat Anak --}}
 <div class="col-md-12 mt-2" id="riwayat-container" style="display: none;">
-    <div class="card border-0" style="background: #f0f4ff; border-radius: 10px;">
+    <div class="card border-0" style="background: #fde8f0; border-radius: 10px;">
         <div class="card-body py-3 px-4">
 
             {{-- Header --}}

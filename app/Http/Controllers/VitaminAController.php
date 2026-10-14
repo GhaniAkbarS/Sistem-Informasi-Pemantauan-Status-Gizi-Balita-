@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\VitaminA;
 use App\Models\Balita;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class VitaminAController extends Controller
 {
@@ -17,7 +18,7 @@ class VitaminAController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'balita_id'         => 'required|exists:sp_balita,id',
+            'balita_id'         => ['required', Rule::exists('sp_balita', 'id')->where('posyandu_id', $request->user()->posyandu_id)],
             'jenis_kapsul'      => 'required',
             'bulan_pemberian'   => 'required',
             'tahun_pemberian'   => 'required|digits:4',

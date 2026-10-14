@@ -5,13 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Periksa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
     public function index(Request $request)
     {
-        $bulan = (int)($request->bulan ?? now()->month);
-        $tahun = (int)($request->tahun ?? now()->year);
+        $filters = $request->validate([
+            'bulan' => 'nullable|integer|between:1,12',
+            'tahun' => 'nullable|integer|between:2000,2100',
+        ]);
+        $bulan = (int)($filters['bulan'] ?? now()->month);
+        $tahun = (int)($filters['tahun'] ?? now()->year);
         $posyanduId = session('posyandu_id');
 
         // ── Data Pemeriksaan ──
@@ -42,7 +47,7 @@ class LaporanController extends Controller
 
         // ── Daftar Tahun untuk filter ──
         $tahunList = \App\Models\Periksa::whereHas('balita', fn($q) => $q->where('posyandu_id', $posyanduId))
-            ->selectRaw('YEAR(tanggal_periksa) as tahun')
+            ->selectRaw($this->yearSql('tanggal_periksa') . ' as tahun')
             ->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
 
         return view('pages.laporan.index', compact(
@@ -54,8 +59,12 @@ class LaporanController extends Controller
 
     public function cetak(Request $request)
     {
-        $bulan = $request->bulan ?? now()->month;
-        $tahun = $request->tahun ?? now()->year;
+        $filters = $request->validate([
+            'bulan' => 'nullable|integer|between:1,12',
+            'tahun' => 'nullable|integer|between:2000,2100',
+        ]);
+        $bulan = (int)($filters['bulan'] ?? now()->month);
+        $tahun = (int)($filters['tahun'] ?? now()->year);
 
         $periksas = Periksa::with('balita')
             ->whereHas('balita', function ($q) {
@@ -80,7 +89,7 @@ class LaporanController extends Controller
 
     public function cetakImunisasi(Request $request)
     {
-        $tahun = (int)($request->tahun ?? now()->year);
+        $tahun = (int)($request->validate(['tahun' => 'nullable|integer|between:2000,2100'])['tahun'] ?? now()->year);
 
         $imunisasis = \App\Models\Imunisasi::with('balita')
             ->whereHas('balita', function ($q) {
@@ -93,7 +102,7 @@ class LaporanController extends Controller
         $tahunList = \App\Models\Imunisasi::whereHas('balita', function ($q) {
                 $q->where('posyandu_id', session('posyandu_id'));
             })
-            ->selectRaw('YEAR(tanggal_pemberian) as tahun')
+            ->selectRaw($this->yearSql('tanggal_pemberian') . ' as tahun')
             ->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
 
         return view('pages.laporan.cetak_imunisasi', compact('imunisasis', 'tahun', 'tahunList'));
@@ -101,7 +110,7 @@ class LaporanController extends Controller
 
     public function cetakVitaminA(Request $request)
     {
-        $tahun = (int)($request->tahun ?? now()->year);
+        $tahun = (int)($request->validate(['tahun' => 'nullable|integer|between:2000,2100'])['tahun'] ?? now()->year);
 
         $vitamins = \App\Models\VitaminA::with('balita')
             ->whereHas('balita', function ($q) {
@@ -118,6 +127,13 @@ class LaporanController extends Controller
             ->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
 
         return view('pages.laporan.cetak_vitamina', compact('vitamins', 'tahun', 'tahunList'));
+    }
+
+    private function yearSql(string $column): string
+    {
+        return DB::getDriverName() === 'sqlite'
+            ? "CAST(strftime('%Y', {$column}) AS INTEGER)"
+            : "YEAR({$column})";
     }
 
 }

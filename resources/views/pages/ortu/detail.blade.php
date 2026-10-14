@@ -71,6 +71,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Riwayat Pemeriksaan</h3>
                 </div>
+                <p class="text-muted small px-3 pt-2 mb-0">Angka Z-score berasal dari tabel proyek yang masih menunggu verifikasi terhadap metode LMS WHO. Hasil ini bukan diagnosis.</p>
                 <div class="table-responsive">
                     <table class="table table-vcenter card-table">
                         <thead>
@@ -79,6 +80,9 @@
                                 <th>Umur</th>
                                 <th>Berat Badan</th>
                                 <th>Tinggi Badan</th>
+                                <th>Z BB/U</th>
+                                <th>Z TB/U</th>
+                                <th>Z BB/PB</th>
                                 <th>Status Gizi</th>
                             </tr>
                         </thead>
@@ -86,25 +90,28 @@
                             @forelse($riwayat as $periksa)
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($periksa->tanggal_periksa)->format('d M Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($anak->tgl_lahir)->diffInMonths($periksa->tanggal_periksa) }} bulan</td>
+                                <td>{{ $periksa->umur_bulan }} bulan</td>
                                 <td>{{ $periksa->berat_badan }} kg</td>
                                 <td>{{ $periksa->tinggi_badan }} cm</td>
+                                <td>{{ $periksa->z_bbu !== null ? number_format($periksa->z_bbu, 2) : '—' }}</td>
+                                <td>{{ $periksa->z_tbu !== null ? number_format($periksa->z_tbu, 2) : '—' }}</td>
+                                <td>{{ $periksa->z_bbpb !== null ? number_format($periksa->z_bbpb, 2) : '—' }}</td>
                                 <td>
                                     @php
                                         $badge = match($periksa->status_gizi) {
-                                            'Gizi Normal'  => 'bg-success',
+                                            'Gizi Normal', 'Gizi Baik' => 'bg-success',
                                             'Gizi Kurang'  => 'bg-warning',
                                             'Stunting'     => 'bg-danger',
                                             'Gizi Lebih'   => 'bg-primary',
                                             default        => 'bg-secondary',
                                         };
                                     @endphp
-                                    <span class="badge {{ $badge }}">{{ $periksa->status_gizi }}</span>
+                                    <span class="badge {{ $badge }}">{{ \App\Services\StatusGizi::label($periksa->status_gizi) }}</span>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">Belum ada data pemeriksaan</td>
+                                <td colspan="8" class="text-center text-muted">Belum ada data pemeriksaan</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -180,7 +187,6 @@
     </div>
 
     @push('after-script')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const gender = '{{ $anak->jk }}'; // 'L' atau 'P'
 
@@ -275,14 +281,22 @@
                     { label: childLabel, data: childData, borderColor: childColor, backgroundColor: childColor.replace('1)', '0.12)'), borderWidth: 3, pointRadius: 6, pointHoverRadius: 9, fill: false, spanGaps: false, tension: 0 },
                 ];
             }
+            // Garis acuan tetap terlihat, tetapi hanya hasil pemeriksaan anak yang memiliki titik interaktif.
+            datasets.slice(0, 5).forEach(dataset => {
+                dataset.pointHoverRadius = 0;
+                dataset.pointHitRadius = 0;
+            });
             return new Chart(document.getElementById(ctxId).getContext('2d'), {
                 type: 'line',
                 data: { labels, datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { intersect: false, mode: 'index' },
+                    interaction: { intersect: true, mode: 'nearest' },
                     plugins: {
+                        tooltip: {
+                            filter: item => item.datasetIndex === 5,
+                        },
                         legend: {
                             position: 'bottom',
                             labels: { font: { size: 10 }, padding: 6, usePointStyle: true, boxWidth: 8 },
@@ -341,11 +355,11 @@
                         {
                             label: 'Berat Badan (kg)',
                             data: examBB,
-                            borderColor: '#4e73df',
+                            borderColor: '#c2185b',
                             backgroundColor: 'rgba(78, 115, 223, 0.1)',
                             borderWidth: 3,
                             pointRadius: 6,
-                            pointBackgroundColor: '#4e73df',
+                            pointBackgroundColor: '#c2185b',
                             yAxisID: 'y-bb',
                             fill: true,
                             tension: 0.3
@@ -401,7 +415,7 @@
                             title: {
                                 display: true,
                                 text: 'Berat Badan (kg)',
-                                color: '#4e73df',
+                                color: '#c2185b',
                                 font: { family: "'Nunito', sans-serif", weight: 'bold' }
                             },
                             grid: { borderDash: [5, 5], color: 'rgba(0,0,0,0.05)' }

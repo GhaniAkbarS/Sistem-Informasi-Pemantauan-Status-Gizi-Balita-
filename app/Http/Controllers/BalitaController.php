@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Balita;
+use App\Models\User;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class BalitaController extends Controller
 {
@@ -24,13 +28,13 @@ class BalitaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'        => 'required',
-            'jk'          => 'required',
-            'tgl_lahir'   => 'required|date',
-            'umur'        => 'required|numeric',
-            'tinggi_badan'=> 'required|numeric',
-            'berat_badan' => 'required|numeric',
-            'user_id'     => 'required|exists:sp_users,id',
+            'nama'        => 'required|string|max:255',
+            'jk'          => 'required|in:L,P',
+            'tgl_lahir'   => 'required|date|before_or_equal:today',
+            'umur'        => 'nullable|integer|between:0,60',
+            'tinggi_badan'=> 'required|numeric|gt:0',
+            'berat_badan' => 'required|numeric|gt:0',
+            'user_id'     => ['required', Rule::exists('sp_users', 'id')->where('posyandu_id', $request->user()->posyandu_id)->where('role', 'orang_tua')],
         ]);
 
         /* =========================================================
@@ -41,7 +45,8 @@ class BalitaController extends Controller
         // \Illuminate\Support\Facades\Log::info('Mencoba input data balita', $request->all());
         // dd('Berhenti di sini untuk cek input data:', $request->all());
 
-        $orangTua = \App\Models\User::findOrFail($request->user_id);
+        $orangTua = User::findOrFail($request->user_id);
+        $umurBulan = $this->umurBulan($request->tgl_lahir);
 
         $namaBalita = $request->nama;
 
@@ -52,9 +57,10 @@ class BalitaController extends Controller
         $this->formatNamaBalita($namaBalita);
 
         Balita::create([
+            'nama'         => $namaBalita,
             'jk'           => $request->jk,
             'tgl_lahir'    => $request->tgl_lahir,
-            'umur'         => $request->umur,
+            'umur'         => $umurBulan,
             'nama_ortu'    => $orangTua->name,
             'tinggi_badan' => $request->tinggi_badan,
             'berat_badan'  => $request->berat_badan,
@@ -91,16 +97,17 @@ class BalitaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama'         => 'required',
-            'user_id'      => 'nullable|exists:sp_users,id',
-            'jk'           => 'required',
-            'tgl_lahir'    => 'required|date',
-            'umur'         => 'required|numeric',
-            'tinggi_badan' => 'required|numeric',
-            'berat_badan'  => 'required|numeric',
+            'nama'         => 'required|string|max:255',
+            'user_id'      => ['nullable', Rule::exists('sp_users', 'id')->where('posyandu_id', $request->user()->posyandu_id)->where('role', 'orang_tua')],
+            'jk'           => 'required|in:L,P',
+            'tgl_lahir'    => 'required|date|before_or_equal:today',
+            'umur'         => 'nullable|integer|between:0,60',
+            'tinggi_badan' => 'required|numeric|gt:0',
+            'berat_badan'  => 'required|numeric|gt:0',
         ]);
 
         $balita = Balita::where('posyandu_id', session('posyandu_id'))->findOrFail($id);
+        $umurBulan = $this->umurBulan($request->tgl_lahir);
 
         // Ambil nama_ortu dari user yang dipilih
         $namaOrtu = $balita->nama_ortu; // default tetap yang lama
@@ -114,9 +121,10 @@ class BalitaController extends Controller
         $this->formatNamaBalita($namaBalita);
 
         $balita->update([
+            'nama'         => $namaBalita,
             'jk'           => $request->jk,
             'tgl_lahir'    => $request->tgl_lahir,
-            'umur'         => $request->umur,
+            'umur'         => $umurBulan,
             'nama_ortu'    => $namaOrtu,
             'tinggi_badan' => $request->tinggi_badan,
             'berat_badan'  => $request->berat_badan,
@@ -129,8 +137,21 @@ class BalitaController extends Controller
     public function destroy($id)
     {
         $balita = Balita::where('posyandu_id', session('posyandu_id'))->findOrFail($id);
+        if ($balita->periksa()->exists() || $balita->imunisasi()->exists() || $balita->vitaminA()->exists()) {
+            return back()->with('error', 'Data balita dengan riwayat pemeriksaan atau layanan tidak dapat dihapus.');
+        }
         $balita->delete();
 
         return redirect()->route('balita.index')->with('success', 'Data Balita berhasil dihapus!');
+    }
+
+    private function umurBulan(string $tanggalLahir): int
+    {
+        $lahir = Carbon::parse($tanggalLahir);
+        $umur = (int) $lahir->diffInMonths(today());
+        if ($umur > 60) {
+            throw ValidationException::withMessages(['tgl_lahir' => 'Usia balita harus 0–60 bulan.']);
+        }
+        return $umur;
     }
 }

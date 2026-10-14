@@ -2,15 +2,12 @@
 <html lang="id">
 <head>
     @include('includes.meta')
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('sb-admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800" rel="stylesheet">
-    <!-- SB Admin 2 -->
-    <link href="{{ asset('sb-admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('tabler/css/tabler.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('tabler/css/sip-theme.css') }}" rel="stylesheet">
     <title>Mulai Sesi Usability Testing</title>
     <style>
         body {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            background: linear-gradient(135deg, #fff7fa 0%, #f8c8da 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -26,12 +23,12 @@
             align-items: flex-start;
             gap: 0.75rem;
             padding: 0.6rem 0;
-            border-bottom: 1px solid #eaecf4;
+            border-bottom: 1px solid #ecdde5;
             font-size: 0.875rem;
         }
         .skenario-item:last-child { border-bottom: none; }
         .skenario-num {
-            background: #4e73df;
+            background: #c2185b;
             color: white;
             border-radius: 50%;
             width: 24px;
@@ -115,9 +112,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="{{ asset('sb-admin/vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('sb-admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('sb-admin/js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ asset('tabler/js/tabler.min.js') }}"></script>
+    <script src="{{ asset('tabler/js/sip-icons.js') }}"></script>
 </body>
 </html>

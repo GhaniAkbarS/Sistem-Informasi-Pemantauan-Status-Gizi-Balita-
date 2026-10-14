@@ -1,264 +1,40 @@
-    <x-app-layout>
-    <div class="main-content">
-        <!-- Basic Card Example -->
-        <div class="card mb-4 bg-primary text-white rounded-0 border-0">
-            <div class="card-body py-5 d-flex justify-content-between align-items-center">
-                <div class="px-3">
-                    <h4 class="m-0 font-weight-bold">Dashboard</h4>
-                    <p class="m-0" style="opacity: 0.8;">{{ session('posyandu_nama') }}</p>
-                </div>
+<x-app-layout>
+<div class="main-content">
 
-            </div>
-        </div>
+<section class="sip-hero"><div><h1>Ringkasan pemantauan gizi</h1><p>Pantau tumbuh kembang balita dari satu halaman.</p></div><span class="sip-posyandu">{{ session('posyandu_nama','Posyandu') }}</span></section>
+@if($perluRujukan > 0)<div class="sip-alert" role="alert"><strong>Hasil pemeriksaan yang perlu ditinjau</strong><p>{{ $perluRujukan }} catatan pemeriksaan berstatus di luar kategori normal. Kader dapat meninjau hasil bersama tenaga kesehatan.</p></div>@endif
+<section class="sip-stats" aria-label="Ringkasan statistik">
+<div class="sip-stat"><div class="sip-stat-label">Total Balita Terdaftar</div><div class="sip-stat-value">{{ $totalBalita }}</div><div class="sip-stat-note">Balita aktif di sistem</div></div>
+<div class="sip-stat"><div class="sip-stat-label">Pemeriksaan Bulan Ini</div><div class="sip-stat-value">{{ $pemeriksaanBulanIni }}</div><div class="sip-stat-note">Pemeriksaan tercatat</div></div>
+<div class="sip-stat"><div class="sip-stat-label">Status Gizi Normal</div><div class="sip-stat-value">{{ $giziNormal }}</div><div class="sip-stat-note">Berdasarkan pemeriksaan</div></div>
+<div class="sip-stat"><div class="sip-stat-label">Perlu Ditinjau</div><div class="sip-stat-value">{{ $perluRujukan }}</div><div class="sip-stat-note">Jumlah catatan, bukan jumlah anak</div></div>
+</section>
+<section class="sip-grid"><div class="sip-card"><h2>Tren Pemeriksaan 6 Bulan Terakhir</h2><div id="sip-trend" class="sip-chart" role="img" aria-label="Grafik tren pemeriksaan enam bulan"></div></div>
+<div class="sip-card"><h2>Distribusi Status Gizi</h2>
+@foreach([['Gizi Normal',$distNormal,'#2c8066'],['Gizi Kurang',$distKurang,'#d19534'],['Stunting',$distStunting,'#bb3653'],['Gizi Lebih',$distLebih,'#c2185b']] as [$label,$count,$color])
+<div class="sip-dist-row"><span>{{ $label }}</span><div class="sip-track"><div class="sip-fill" style="width:{{ $totalDist ? round($count / $totalDist * 100) : 0 }}%;background:{{ $color }}"></div></div><strong>{{ $totalDist ? round($count / $totalDist * 100) : 0 }}%</strong></div>
+@endforeach
+</div></section>
+<section class="sip-card"><h2>Pemeriksaan Terbaru</h2>
+<p class="text-secondary small">Z-score berasal dari tabel proyek saat ini dan belum diverifikasi terhadap metode LMS WHO. Tinjau hasil bersama tenaga kesehatan.</p>
+<div class="table-responsive"><table class="table table-vcenter sip-table"><thead><tr><th>Nama Balita</th><th>Umur</th><th>Tanggal Periksa</th><th>BB / TB</th><th>Z-score</th><th>Status Gizi</th><th>Aksi</th></tr></thead><tbody>
+@forelse($recentExaminations as $periksa)
+@php $status=$periksa->status_gizi; $badge=in_array($status,['Stunting','Sangat Pendek'])?'sip-badge-bad':($status==='Gizi Kurang'?'sip-badge-warn':(in_array($status,['Gizi Baik','Gizi Normal'])?'sip-badge-good':'sip-badge-other')); @endphp
+<tr><td><strong>{{ $periksa->balita->nama ?? 'N/A' }}</strong></td><td>{{ $periksa->umur_bulan }} bulan</td><td>{{ \Carbon\Carbon::parse($periksa->tanggal_periksa)->translatedFormat('d M Y') }}</td><td>{{ $periksa->berat_badan }} kg / {{ $periksa->tinggi_badan }} cm</td><td>BB/U: {{ $periksa->z_bbu !== null ? number_format($periksa->z_bbu,2) : '—' }}<br>TB/U: {{ $periksa->z_tbu !== null ? number_format($periksa->z_tbu,2) : '—' }}<br>BB/PB: {{ $periksa->z_bbpb !== null ? number_format($periksa->z_bbpb,2) : '—' }}</td><td><span class="sip-badge {{ $badge }}">{{ \App\Services\StatusGizi::label($status) }}</span></td><td><a href="{{ route('periksa.edit',$periksa->id) }}">Detail</a></td></tr>
+@empty<tr><td colspan="7" class="text-center text-secondary py-4">Belum ada pemeriksaan terbaru</td></tr>@endforelse
+</tbody></table></div></section>
 
-        <div class="container">
-            <!-- Alert Notifikasi Stunting -->
-            <div class="alert-box">
-
-                <div class="alert-content">
-                    <h3>Perhatian: Terdeteksi Kasus Berisiko Stunting</h3>
-                    <p>{{ $perluRujukan }} balita memerlukan perhatian khusus dan rujukan ke Puskesmas</p>
-                </div>
-            </div>
-
-            <!-- PERUBAHAN: Menampilkan angka yang benar-benar berasal dari database (dinamis) -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Total Balita Terdaftar</span>
-                    </div>
-                    <div class="stat-value">{{ $totalBalita }}</div>
-                    <div class="stat-subtitle">Total balita aktif di sistem</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Pemeriksaan Bulan Ini</span>
-                    </div>
-                    <div class="stat-value">{{ $pemeriksaanBulanIni }}</div>
-                    <div class="stat-subtitle">Diperiksa pada bulan ini</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Status Gizi Normal</span>
-                    </div>
-                    <div class="stat-value">{{ $giziNormal }}</div>
-                    <div class="stat-subtitle">Berdasarkan riwayat periksa</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-title">Perlu Rujukan</span>
-                    </div>
-                    <div class="stat-value">{{ $perluRujukan }}</div>
-                    <div class="stat-subtitle">Stunting / Sangat Pendek</div>
-                </div>
-            </div>
-            <!-- AKHIR PERUBAHAN -->
-
-            <!-- Grafik dan Breakdown -->
-            <div class="charts-section">
-                <div class="chart-card">
-                    <h2>Tren Pemeriksaan 6 Bulan Terakhir</h2>
-                    <!-- PERUBAHAN: Menghapus placeholder teks dan menggantinya dengan elemen canvas untuk menampilkan grafik Chart.js -->
-                    <div class="chart-area" style="height: 300px;">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
-                    <!-- AKHIR PERUBAHAN -->
-                </div>
-
-                <div class="chart-card">
-                    <h2>Distribusi Status Gizi</h2>
-                    <div class="status-breakdown">
-                        <div class="status-item">
-                            <div class="status-color" style="background: #10b981;"></div>
-                            <span class="status-label">Gizi Normal</span>
-                            <span class="status-count">{{ $distNormal }}</span>
-                            <span class="status-percentage">{{ $totalDist > 0 ? round($distNormal / $totalDist * 100) : 0 }}%</span>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-color" style="background: #f59e0b;"></div>
-                            <span class="status-label">Gizi Kurang</span>
-                            <span class="status-count">{{ $distKurang }}</span>
-                            <span class="status-percentage">{{ $totalDist > 0 ? round($distKurang / $totalDist * 100) : 0 }}%</span>
-                        </div>
-                        <div class="status-item">
-                            <div class="status-color" style="background: #ef4444;"></div>
-                            <span class="status-label">Stunting</span>
-                            <span class="status-count">{{ $distStunting }}</span>
-                            <span class="status-percentage">{{ $totalDist > 0 ? round($distStunting / $totalDist * 100) : 0 }}%</span>
-                        </div>
-                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-                            <p style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">
-                                <strong>Catatan:</strong> {{ $perluRujukan }} balita memerlukan pemantauan intensif
-                            </p>
-                            <p style="font-size: 12px; color: #9ca3af;">
-                                Data per {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabel Pemeriksaan Terbaru -->
-            <div class="recent-table">
-                <h2>Pemeriksaan Terbaru</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nama Balita</th>
-                                <th>Umur</th>
-                                <th>Tanggal Periksa</th>
-                                <th>BB/TB</th>
-                                <th>Z-Score</th>
-                                <th>Status Gizi</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentExaminations as $periksa)
-                            <tr>
-                                <td><strong>{{ $periksa->balita->nama ?? 'N/A' }}</strong></td>
-                                <td>{{ $periksa->umur_bulan }} bulan</td>
-                                <td>{{ \Carbon\Carbon::parse($periksa->tanggal_periksa)->format('d M Y') }}</td>
-                                <td>{{ $periksa->berat_badan }}kg / {{ $periksa->tinggi_badan }}cm</td>
-                                <td>-</td>
-                                <td>
-                                    @php
-                                        $badgeClass = 'badge-secondary';
-                                        if(in_array($periksa->status_gizi, ['Stunting', 'Sangat Pendek'])) $badgeClass = 'badge-danger';
-                                        elseif($periksa->status_gizi == 'Gizi Kurang') $badgeClass = 'badge-warning';
-                                        elseif($periksa->status_gizi == 'Gizi Normal') $badgeClass = 'badge-success';
-                                        elseif($periksa->status_gizi == 'Gizi Lebih') $badgeClass = 'badge-primary';
-                                    @endphp
-                                    <span class="badge {{ $badgeClass }}">{{ $periksa->status_gizi }}</span>
-                                </td>
-                                <td><a href="{{ route('periksa.edit', $periksa->id) }}" class="action-btn">Detail</a></td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="7" class="text-center">Belum ada pemeriksaan</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<!-- PERUBAHAN: Memindahkan directive push ke dalam komponen x-app-layout agar dikenali oleh Laravel Blade -->
+</div>
 @push('after-script')
 <script>
-// Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
-
-// Area Chart Example
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: {!! json_encode($trenLabels) !!},
-    datasets: [
-      {
-        label: "Gizi Normal",
-        lineTension: 0.3,
-        backgroundColor: "rgba(16, 185, 129, 0.08)",
-        borderColor: "rgba(16, 185, 129, 1)",
-        pointRadius: 3,
-        pointBackgroundColor: "rgba(16, 185, 129, 1)",
-        pointBorderColor: "rgba(16, 185, 129, 1)",
-        pointHoverRadius: 3,
-        pointHoverBackgroundColor: "rgba(16, 185, 129, 1)",
-        pointHoverBorderColor: "rgba(16, 185, 129, 1)",
-        pointHitRadius: 10,
-        pointBorderWidth: 2,
-        data: {!! json_encode($trenDataNormal) !!},
-      },
-      {
-        label: "Perlu Perhatian",
-        lineTension: 0.3,
-        backgroundColor: "rgba(239, 68, 68, 0.08)",
-        borderColor: "rgba(239, 68, 68, 1)",
-        pointRadius: 3,
-        pointBackgroundColor: "rgba(239, 68, 68, 1)",
-        pointBorderColor: "rgba(239, 68, 68, 1)",
-        pointHoverRadius: 3,
-        pointHoverBackgroundColor: "rgba(239, 68, 68, 1)",
-        pointHoverBorderColor: "rgba(239, 68, 68, 1)",
-        pointHitRadius: 10,
-        pointBorderWidth: 2,
-        data: {!! json_encode($trenDataStunting) !!},
-      }
-    ],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0
-      }
-    },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 7
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          padding: 10,
-        },
-        gridLines: {
-          color: "rgb(234, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: 'index',
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': ' + tooltipItem.yLabel;
-        }
-      }
-    }
-  }
+document.addEventListener('DOMContentLoaded',function(){
+  const el=document.getElementById('sip-trend');if(!el||!window.ApexCharts)return;
+  new ApexCharts(el,{chart:{type:'area',height:235,toolbar:{show:false},fontFamily:'inherit'},
+    series:[{name:'Gizi Normal',data:@json($trenDataNormal)},{name:'Stunting',data:@json($trenDataStunting)}],
+    xaxis:{categories:@json($trenLabels)},colors:['#2c8066','#bb3653'],dataLabels:{enabled:false},
+    stroke:{curve:'smooth',width:2},fill:{type:'solid',opacity:.12},grid:{borderColor:'#efdee6'},
+    legend:{position:'top',horizontalAlign:'left'}}).render();
 });
 </script>
 @endpush
-<!-- AKHIR PERUBAHAN -->
 </x-app-layout>

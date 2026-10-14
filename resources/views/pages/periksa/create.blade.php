@@ -85,7 +85,6 @@
         </div>
     </div>
 @push('after-script')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // === WHO helper & data (sama dengan halaman detail ortu) ===
     function whoLines(pairs) {
@@ -150,13 +149,21 @@
                 { label: childLabel, data: childData, borderColor:childColor, borderWidth:2.5, pointRadius:5, pointHoverRadius:8, fill:false, spanGaps:false, tension:0 },
             ];
         }
+        // Garis acuan tidak membuat titik hover; titik anak hanya muncul pada hasil pemeriksaan.
+        datasets.slice(0, 5).forEach(dataset => {
+            dataset.pointHoverRadius = 0;
+            dataset.pointHitRadius = 0;
+        });
         return new Chart(document.getElementById(ctxId).getContext('2d'), {
             type: 'line',
             data: { labels, datasets },
             options: {
                 responsive: true,
-                interaction: { intersect: false, mode: 'index' },
+                interaction: { intersect: true, mode: 'nearest' },
                 plugins: {
+                    tooltip: {
+                        filter: item => item.datasetIndex === 5,
+                    },
                     legend: {
                         position: 'bottom',
                         labels: { font:{size:10}, padding:8, usePointStyle:true },
@@ -214,11 +221,12 @@
                     ? new Date(tgl).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
                     : '-';
 
+                const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
                 const statusBadge = (status) => {
-                    const color = status === 'Gizi Baik' ? 'success'
+                    const color = (status === 'Gizi Normal' || status === 'Gizi Baik') ? 'success'
                         : (status === 'Stunting' || status === 'Gizi Buruk') ? 'danger'
                         : 'warning';
-                    return `<span class="badge bg-${color}">${status ?? '-'}</span>`;
+                    return `<span class="badge bg-${color}">${escapeHtml(status ?? '-')}</span>`;
                 };
 
                 // Render Pemeriksaan
@@ -239,8 +247,8 @@
                     ? data.imunisasi.map(i => `
                         <tr>
                             <td>${fmt(i.tanggal)}</td>
-                            <td>${i.nama_vaksin ?? '-'}</td>
-                            <td>${i.keterangan ?? '-'}</td>
+                            <td>${escapeHtml(i.nama_vaksin ?? '-')}</td>
+                            <td>${escapeHtml(i.keterangan ?? '-')}</td>
                         </tr>`).join('')
                     : `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada data imunisasi</td></tr>`;
 
@@ -250,7 +258,7 @@
                     ? data.vitamin_a.map(v => `
                         <tr>
                             <td>${fmt(v.tanggal)}</td>
-                            <td>${v.jenis_kapsul ? 'Kapsul ' + v.jenis_kapsul : '-'}</td>
+                            <td>${escapeHtml(v.jenis_kapsul ? 'Kapsul ' + v.jenis_kapsul : '-')}</td>
                         </tr>`).join('')
                     : `<tr><td colspan="2" class="text-center text-muted py-3">Belum ada data vitamin A</td></tr>`;
 

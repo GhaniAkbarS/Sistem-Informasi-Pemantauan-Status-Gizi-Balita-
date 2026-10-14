@@ -22,6 +22,6 @@ class CheckRole
         }
 
         // Jika tidak punya akses, lempar ke dashboard dengan pesan error
-        return redirect('/')->with('error', 'Anda tidak memiliki hak akses ke halaman tersebut.');
+        abort(403, 'Anda tidak memiliki hak akses ke halaman tersebut.');
     }
 }

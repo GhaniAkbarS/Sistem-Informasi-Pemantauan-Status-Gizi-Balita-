@@ -1,306 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
     @include('includes.meta')
-    <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "x55p88e9py");
-    </script>
     @stack('before-style')
     @include('includes.style')
     @stack('after-style')
-    <style>
-        /* ============================================================
-           MOBILE RESPONSIVE — SB Admin 2 Fix
-           Root cause: #wrapper pakai display:flex sehingga sidebar
-           mendorong konten ke kanan meski sudah position:fixed.
-           Fix: ubah #wrapper ke display:block di mobile.
-        ============================================================ */
-
-        /* ── Topbar hanya muncul di mobile ── */
-        .mobile-topbar {
-            display: none;
-            align-items: center;
-            height: 56px;
-            padding: 0 16px;
-            background: #f8c8da;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 500;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .mobile-topbar-toggle {
-            background: none;
-            border: none;
-            padding: 8px 10px;
-            cursor: pointer;
-            border-radius: 6px;
-            color: #4e73df;
-            font-size: 22px;
-            line-height: 1;
-        }
-        .mobile-topbar-brand {
-            margin-left: 10px;
-            font-weight: 700;
-            color: #4e73df;
-            font-size: 16px;
-            flex: 1;
-        }
-        .mobile-topbar-user {
-            font-size: 12px;
-            color: #6b7280;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
-        }
-
-        /* ── Sidebar desktop harus tetap statis di tinggi viewport ── */
-        #wrapper {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
-        #content-wrapper {
-            flex: 1 1 auto;
-            min-width: 0;
-            width: 100%;
-        }
-        #wrapper .navbar-nav.sidebar {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            max-height: 100vh;
-            flex-shrink: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            align-self: flex-start;
-        }
-
-        /* ── Overlay gelap saat sidebar terbuka ── */
-        #sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.55);
-            z-index: 1040;
-        }
-        #sidebar-overlay.active { display: block; }
-
-        /* ── Breakpoint mobile: < 768px ── */
-        @media (max-width: 767.98px) {
-
-            /* Tampilkan topbar mobile */
-            .mobile-topbar { display: flex !important; }
-
-            /* Ubah #wrapper dari flex ke block:
-               ini kunci utama agar sidebar tidak mendorong konten */
-            #wrapper {
-                display: block !important;
-                overflow-x: hidden !important;
-            }
-
-            /* Sembunyikan sidebar di luar layar sebelah kiri */
-            #wrapper .navbar-nav.sidebar {
-                position: fixed !important;
-                top: 0 !important;
-                left: -280px !important;
-                width: 270px !important;
-                height: 100vh !important;
-                z-index: 1050 !important;
-                transition: left 0.28s ease !important;
-                overflow-y: auto !important;
-                overflow-x: hidden !important;
-                display: flex !important;
-                flex-direction: column !important;
-            }
-
-            /* Tampilkan sidebar saat kelas ini ditambahkan */
-            #wrapper .navbar-nav.sidebar.sidebar-mobile-open {
-                left: 0 !important;
-                box-shadow: 4px 0 20px rgba(0,0,0,0.25) !important;
-            }
-
-            /* Content wrapper: full width, tanpa margin kiri */
-            #content-wrapper {
-                margin-left: 0 !important;
-                width: 100% !important;
-                min-width: 0 !important;
-            }
-        }
-
-        /* ── Perbaikan nav item: ikon + teks sejajar horizontal ── */
-        @media (max-width: 767.98px) {
-            /* Setiap nav-link tampil row, bukan kolom */
-            #wrapper .navbar-nav.sidebar .nav-item .nav-link {
-                display: flex !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                text-align: left !important;
-                padding: 12px 16px !important;
-                min-width: 0 !important;
-            }
-            /* Ikon: ukuran wajar, margin kanan */
-            #wrapper .navbar-nav.sidebar .nav-item .nav-link i {
-                font-size: 15px !important;
-                width: 20px !important;
-                margin-right: 10px !important;
-                text-align: center !important;
-                flex-shrink: 0 !important;
-            }
-            /* Teks: satu baris penuh, tidak dipotong */
-            #wrapper .navbar-nav.sidebar .nav-item .nav-link span {
-                display: inline !important;
-                font-size: 13px !important;
-                opacity: 1 !important;
-                white-space: nowrap !important;
-                flex-shrink: 1 !important;
-            }
-            /* Heading section (MENU UTAMA, LAINNYA) */
-            #wrapper .navbar-nav.sidebar .sidebar-heading {
-                text-align: left !important;
-                padding: 8px 20px !important;
-                font-size: 11px !important;
-            }
-            /* Brand atas sidebar: sejajar kiri */
-            #wrapper .navbar-nav.sidebar .sidebar-brand {
-                padding: 16px 20px !important;
-                justify-content: flex-start !important;
-            }
-            #wrapper .navbar-nav.sidebar .sidebar-brand-icon {
-                margin-right: 10px !important;
-                transform: none !important;
-            }
-            #wrapper .navbar-nav.sidebar .sidebar-brand-text {
-                display: inline !important;
-                font-size: 15px !important;
-            }
-            /* Tombol toggle sidebar (collapse button) — sembunyikan di mobile */
-            #wrapper .navbar-nav.sidebar #sidebarToggle {
-                display: none !important;
-            }
-            /* Info user + logout di bawah sidebar */
-            #wrapper .navbar-nav.sidebar .text-center.px-3 {
-                text-align: left !important;
-                padding: 12px 20px !important;
-            }
-        }
-
-        /* ── Card: background putih tegas & font hitam ── */
-        .card:not(.bg-primary) {
-            background-color: #ffffff !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12) !important;
-        }
-        .card-body:not(.bg-primary .card-body) {
-            background-color: #ffffff !important;
-        }
-        
-        /* Header banner tetap pink – override card-body putih */
-        html body .card.bg-primary,
-        html body .card.bg-primary .card-body {
-            background-color: #fde8f0 !important;
-            background-image: none !important;
-        }
-        .card-header {
-            background-color: #f8f9fa !important;
-        }
-        .card-header .card-title,
-        .card-title {
-            font-weight: 700 !important;
-            color: #1a1a1a !important;
-        }
-        .card h5 {
-            font-weight: 700 !important;
-            color: #1a1a1a !important;
-        }
-        .card .text-muted {
-            color: #555555 !important;
-            font-weight: 500 !important;
-        }
-        h5 {
-            font-weight: 700 !important;
-            color: #1a1a1a !important;
-        }
-    </style>
 </head>
 <body>
-    <!-- Overlay sidebar (di luar #wrapper) -->
-    <div id="sidebar-overlay" onclick="closeMobileSidebar()"></div>
-
-    <!-- Topbar Mobile (di luar #wrapper agar tidak terpengaruh flexbox) -->
-    <div class="mobile-topbar">
-        <button class="mobile-topbar-toggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu">
-            <i class="fas fa-bars"></i>
-        </button>
-        <span class="mobile-topbar-brand">SIP Gizi Balita</span>
-        <span class="mobile-topbar-user">
-            <i class="fas fa-user-circle mr-1"></i>
-            {{ ucfirst(Auth::user()->name ?? 'User') }}
-        </span>
+<div class="sip-shell">
+    <x-nav-layout />
+    <div class="sip-page">
+        <header class="sip-topbar">
+            <button type="button" class="sip-menu-toggle" id="sip-menu-toggle" aria-label="Buka menu" aria-controls="sip-sidebar" aria-expanded="false">
+                <span data-sip-icon="menu"></span>
+            </button>
+            <div class="sip-topbar-title">SIP Gizi Balita</div>
+            <div class="sip-topbar-user">{{ ucfirst(auth()->user()?->name ?? 'Pengguna') }}</div>
+        </header>
+        <main id="content" class="sip-content">
+            {{ $slot }}
+        </main>
     </div>
-
-    <div id="wrapper">
-        <x-nav-layout></x-nav-layout>
-
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-            <!-- Main Content -->
-            <div id="content">
-                {{ $slot }}
-            </div>
-        </div>
-        <!-- End of Content Wrapper -->
-    </div>
-    <!-- End of Page Wrapper -->
-
-    @stack('before-script')
-    @include('includes.script')
-    @stack('after-script')
-
-    <script>
-        function toggleMobileSidebar() {
-            const sidebar = document.querySelector('#wrapper .navbar-nav.sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (!sidebar) return;
-            const isOpen = sidebar.classList.contains('sidebar-mobile-open');
-            if (isOpen) {
-                sidebar.classList.remove('sidebar-mobile-open');
-                overlay.classList.remove('active');
-            } else {
-                sidebar.classList.add('sidebar-mobile-open');
-                overlay.classList.add('active');
-            }
-        }
-
-        function closeMobileSidebar() {
-            const sidebar = document.querySelector('#wrapper .navbar-nav.sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (sidebar) sidebar.classList.remove('sidebar-mobile-open');
-            if (overlay) overlay.classList.remove('active');
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Tutup sidebar otomatis saat link diklik di mobile
-            const navLinks = document.querySelectorAll('#wrapper .navbar-nav.sidebar .nav-link');
-            navLinks.forEach(function (link) {
-                link.addEventListener('click', function () {
-                    if (window.innerWidth <= 767) closeMobileSidebar();
-                });
-            });
-
-            // Reset saat resize ke desktop
-            window.addEventListener('resize', function () {
-                if (window.innerWidth > 767) {
-                    closeMobileSidebar();
-                }
-            });
-        });
-    </script>
+</div>
+<button type="button" class="sip-sidebar-backdrop" id="sip-sidebar-backdrop" aria-label="Tutup menu" hidden></button>
+@stack('before-script')
+@include('includes.script')
+@stack('after-script')
+<script>
+(() => {
+    const button = document.getElementById('sip-menu-toggle');
+    const backdrop = document.getElementById('sip-sidebar-backdrop');
+    const sidebar = document.getElementById('sip-sidebar');
+    if (!button || !backdrop || !sidebar) return;
+    const setOpen = (open) => {
+        document.body.classList.toggle('sip-menu-open', open);
+        backdrop.hidden = !open;
+        button.setAttribute('aria-expanded', String(open));
+        button.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+    };
+    button.addEventListener('click', () => setOpen(!document.body.classList.contains('sip-menu-open')));
+    backdrop.addEventListener('click', () => setOpen(false));
+    sidebar.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setOpen(false)));
+    window.addEventListener('keydown', event => { if (event.key === 'Escape') setOpen(false); });
+    window.addEventListener('resize', () => { if (window.innerWidth >= 768) setOpen(false); });
+})();
+</script>
 </body>
 </html>

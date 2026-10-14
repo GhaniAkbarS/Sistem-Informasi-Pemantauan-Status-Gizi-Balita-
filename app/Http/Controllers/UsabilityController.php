@@ -55,6 +55,16 @@ class UsabilityController extends Controller
     // ── Terima log event dari JavaScript (AJAX) ───────────────────────────────
     public function logEvent(Request $request)
     {
+        $data = $request->validate([
+            'event_type' => 'nullable|string|max:50',
+            'page_url' => 'nullable|string|max:255',
+            'page_name' => 'nullable|string|max:100',
+            'element' => 'nullable|string|max:100',
+            'durasi_di_halaman' => 'nullable|numeric|min:0|max:86400',
+            'is_back_navigation' => 'nullable|boolean',
+            'is_error' => 'nullable|boolean',
+            'catatan' => 'nullable|string|max:500',
+        ]);
         $sessionId = session('usability_session_id');
         if (!$sessionId) {
             return response()->json(['ok' => false, 'msg' => 'Tidak ada sesi aktif'], 400);
@@ -62,14 +72,14 @@ class UsabilityController extends Controller
 
         UsabilityLog::create([
             'usability_session_id' => $sessionId,
-            'event_type'           => $request->event_type ?? 'unknown',
-            'page_url'             => $request->page_url ?? '',
-            'page_name'            => $request->page_name ?? null,
-            'element'              => $request->element ?? null,
-            'durasi_di_halaman'    => $request->durasi_di_halaman ?? null,
-            'is_back_navigation'   => $request->is_back_navigation ?? false,
-            'is_error'             => $request->is_error ?? false,
-            'catatan'              => $request->catatan ?? null,
+            'event_type'           => $data['event_type'] ?? 'unknown',
+            'page_url'             => parse_url($data['page_url'] ?? '', PHP_URL_PATH) ?: '',
+            'page_name'            => $data['page_name'] ?? null,
+            'element'              => $data['element'] ?? null,
+            'durasi_di_halaman'    => $data['durasi_di_halaman'] ?? null,
+            'is_back_navigation'   => $data['is_back_navigation'] ?? false,
+            'is_error'             => $data['is_error'] ?? false,
+            'catatan'              => $data['catatan'] ?? null,
             'terjadi_at'           => now(),
         ]);
 
@@ -79,6 +89,12 @@ class UsabilityController extends Controller
     // ── Tandai skenario selesai ────────────────────────────────────────────────
     public function completeTask(Request $request)
     {
+        $data = $request->validate([
+            'task_number' => 'required|integer|between:1,4',
+            'berhasil' => 'nullable|boolean',
+            'durasi_detik' => 'nullable|numeric|min:0|max:86400',
+            'jumlah_error' => 'nullable|integer|min:0|max:10000',
+        ]);
         $sessionId = session('usability_session_id');
         if (!$sessionId) {
             return response()->json(['ok' => false], 400);
@@ -86,11 +102,11 @@ class UsabilityController extends Controller
 
         UsabilityTaskResult::create([
             'usability_session_id' => $sessionId,
-            'task_number'          => $request->task_number,
-            'task_name'            => self::skenarioList()[$request->task_number] ?? 'Tidak diketahui',
-            'berhasil'             => $request->berhasil ?? true,
-            'durasi_detik'         => $request->durasi_detik ?? null,
-            'jumlah_error'         => $request->jumlah_error ?? 0,
+            'task_number'          => $data['task_number'],
+            'task_name'            => self::skenarioList()[$data['task_number']],
+            'berhasil'             => $data['berhasil'] ?? true,
+            'durasi_detik'         => $data['durasi_detik'] ?? null,
+            'jumlah_error'         => $data['jumlah_error'] ?? 0,
         ]);
 
         return response()->json(['ok' => true]);
@@ -105,12 +121,14 @@ class UsabilityController extends Controller
         }
 
         $sesi = UsabilitySession::find($sessionId);
-        if ($sesi) {
-            $sesi->update([
-                'selesai_at'   => now(),
-                'durasi_detik' => now()->diffInSeconds($sesi->mulai_at),
-            ]);
+        if (!$sesi) {
+            session()->forget(['usability_session_id', 'usability_token']);
+            return redirect('/usability/start');
         }
+        $sesi->update([
+            'selesai_at'   => now(),
+            'durasi_detik' => now()->diffInSeconds($sesi->mulai_at),
+        ]);
 
         session()->forget(['usability_session_id', 'usability_token']);
 

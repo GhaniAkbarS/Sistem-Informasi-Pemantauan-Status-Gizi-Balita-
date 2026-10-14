@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Periksa;
 use App\Models\Balita;
 use App\Services\GiziKalkulator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class PeriksaController extends Controller
 {
@@ -31,10 +33,10 @@ class PeriksaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'balita_id'      => 'required|exists:sp_balita,id',
-            'tgl_periksa'    => 'required|date',
-            'berat_badan'    => 'required|numeric',
-            'tinggi_badan'   => 'required|numeric',
+            'balita_id'      => ['required', Rule::exists('sp_balita', 'id')->where('posyandu_id', $request->user()->posyandu_id)],
+            'tgl_periksa'    => 'required|date|before_or_equal:today',
+            'berat_badan'    => 'required|numeric|gt:0',
+            'tinggi_badan'   => 'required|numeric|between:45,110',
             'lingkar_kepala' => 'nullable|numeric',
             'catatan'        => 'nullable|string',
         ]);
@@ -43,7 +45,10 @@ class PeriksaController extends Controller
 
         $tgl_lahir   = \Carbon\Carbon::parse($balita->tgl_lahir);
         $tgl_periksa = \Carbon\Carbon::parse($request->tgl_periksa);
-        $umur_bulan  = $tgl_lahir->diffInMonths($tgl_periksa);
+        if ($tgl_periksa->lt($tgl_lahir) || $tgl_periksa->gte($tgl_lahir->copy()->addMonths(61))) {
+            throw ValidationException::withMessages(['tgl_periksa' => 'Tanggal pemeriksaan harus saat usia 0–60 bulan.']);
+        }
+        $umur_bulan  = (int) $tgl_lahir->diffInMonths($tgl_periksa);
         $gizi = \App\Services\GiziKalkulator::hitung(
         (float) $request->berat_badan,
         (float) $request->tinggi_badan,
@@ -61,6 +66,9 @@ class PeriksaController extends Controller
             'tinggi_badan'    => $request->tinggi_badan,
             'jenis_pengukuran'=> 'TB',
             'status_gizi'     => $gizi['status_gizi'],
+            'z_bbu'          => $gizi['z_bbu'],
+            'z_tbu'          => $gizi['z_tbu'],
+            'z_bbpb'         => $gizi['z_bbpb'],
         ]);
 
         return redirect()->route('periksa.index')->with('success', 'Data pemeriksaan berhasil ditambahkan.');
@@ -68,7 +76,7 @@ class PeriksaController extends Controller
 
     public function edit($id)
     {
-        $periksa = Periksa::findOrFail($id);
+        $periksa = Periksa::whereHas('balita', fn ($q) => $q->where('posyandu_id', auth()->user()->posyandu_id))->findOrFail($id);
         $balitas = Balita::where('posyandu_id', session('posyandu_id'))->get();
         return view('pages.periksa.edit', compact('periksa', 'balitas'));
     }
@@ -76,20 +84,23 @@ class PeriksaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'balita_id'      => 'required|exists:sp_balita,id',
-            'tgl_periksa'    => 'required|date',
-            'berat_badan'    => 'required|numeric',
-            'tinggi_badan'   => 'required|numeric',
+            'balita_id'      => ['required', Rule::exists('sp_balita', 'id')->where('posyandu_id', $request->user()->posyandu_id)],
+            'tgl_periksa'    => 'required|date|before_or_equal:today',
+            'berat_badan'    => 'required|numeric|gt:0',
+            'tinggi_badan'   => 'required|numeric|between:45,110',
             'lingkar_kepala' => 'nullable|numeric',
             'catatan'        => 'nullable|string',
         ]);
 
-        $periksa = Periksa::findOrFail($id);
+        $periksa = Periksa::whereHas('balita', fn ($q) => $q->where('posyandu_id', $request->user()->posyandu_id))->findOrFail($id);
         $balita  = Balita::findOrFail($request->balita_id);
 
         $tgl_lahir   = \Carbon\Carbon::parse($balita->tgl_lahir);
         $tgl_periksa = \Carbon\Carbon::parse($request->tgl_periksa);
-        $umur_bulan  = $tgl_lahir->diffInMonths($tgl_periksa);
+        if ($tgl_periksa->lt($tgl_lahir) || $tgl_periksa->gte($tgl_lahir->copy()->addMonths(61))) {
+            throw ValidationException::withMessages(['tgl_periksa' => 'Tanggal pemeriksaan harus saat usia 0–60 bulan.']);
+        }
+        $umur_bulan  = (int) $tgl_lahir->diffInMonths($tgl_periksa);
 
         $gizi = \App\Services\GiziKalkulator::hitung(
             (float) $request->berat_badan,
@@ -108,6 +119,9 @@ class PeriksaController extends Controller
             'tinggi_badan'    => $request->tinggi_badan,
             'jenis_pengukuran'=> 'TB',
             'status_gizi'     => $gizi['status_gizi'],
+            'z_bbu'          => $gizi['z_bbu'],
+            'z_tbu'          => $gizi['z_tbu'],
+            'z_bbpb'         => $gizi['z_bbpb'],
         ]);
 
         return redirect()->route('periksa.index')->with('success', 'Data pemeriksaan berhasil diperbarui.');
@@ -115,7 +129,7 @@ class PeriksaController extends Controller
 
     public function destroy($id)
     {
-        $periksa = Periksa::findOrFail($id);
+        $periksa = Periksa::whereHas('balita', fn ($q) => $q->where('posyandu_id', auth()->user()->posyandu_id))->findOrFail($id);
         $periksa->delete();
 
         return redirect()->route('periksa.index')->with('success', 'Data pemeriksaan berhasil dihapus.');
@@ -138,6 +152,9 @@ class PeriksaController extends Controller
                 'berat_badan'  => $p->berat_badan,
                 'tinggi_badan' => $p->tinggi_badan,
                 'status_gizi'  => $p->status_gizi,
+                'z_bbu'       => $p->z_bbu,
+                'z_tbu'       => $p->z_tbu,
+                'z_bbpb'      => $p->z_bbpb,
             ]),
             'imunisasi' => $balita->imunisasi->map(fn($i) => [
                 'tanggal'    => $i->tanggal_pemberian,

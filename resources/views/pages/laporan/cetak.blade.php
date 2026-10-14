@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Pemeriksaan - {{ $namaBulan }} {{ $tahun }}</title>
+    <link rel="stylesheet" href="{{ asset('tabler/css/tabler.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('tabler/css/sip-theme.css') }}">
     <style>
         * {
             margin: 0;
@@ -27,7 +29,7 @@
 
         .btn-print {
             padding: 8px 20px;
-            background: #2c5f8a;
+            background: #c2185b;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -120,8 +122,8 @@
         .summary-item.stunting { border-color: #dc3545; }
         .summary-item.stunting .value { color: #dc3545; }
 
-        .summary-item.total   { border-color: #2c5f8a; }
-        .summary-item.total .value   { color: #2c5f8a; }
+        .summary-item.total   { border-color: #c2185b; }
+        .summary-item.total .value   { color: #c2185b; }
 
         /* ── Tabel ── */
         table {
@@ -131,7 +133,7 @@
         }
 
         thead tr {
-            background-color: #2c5f8a;
+            background-color: #c2185b;
             color: #fff;
         }
 
@@ -149,7 +151,7 @@
         }
 
         tbody tr:nth-child(even) {
-            background-color: #f5f8fc;
+            background-color: #fff7fa;
         }
 
         .badge-normal   { color: #155724; font-weight: bold; }
@@ -228,18 +230,18 @@
     {{-- Ringkasan Statistik --}}
     @php
         $totalAnak   = $periksas->count();
-        $jmlNormal   = $periksas->where('status_gizi', 'Gizi Baik')->count();
+        $jmlNormal   = $periksas->filter(fn ($p) => \App\Services\StatusGizi::label($p->status_gizi) === \App\Services\StatusGizi::NORMAL)->count();
         $jmlKurang   = $periksas->where('status_gizi', 'Gizi Kurang')->count();
         $jmlLebih    = $periksas->where('status_gizi', 'Gizi Lebih')->count();
         $jmlStunting = $periksas->where('status_gizi', 'Stunting')->count();
     @endphp
     <div class="summary-box">
         <div class="summary-item total">
-            <div class="label">Total Anak</div>
+            <div class="label">Total Pemeriksaan</div>
             <div class="value">{{ $totalAnak }}</div>
         </div>
         <div class="summary-item normal">
-            <div class="label">Gizi Baik</div>
+            <div class="label">Gizi Normal</div>
             <div class="value">{{ $jmlNormal }}</div>
         </div>
         <div class="summary-item kurang">
@@ -268,6 +270,9 @@
                 <th>Umur</th>
                 <th>BB (kg)</th>
                 <th>TB (cm)</th>
+                <th>Z BB/U</th>
+                <th>Z TB/U</th>
+                <th>Z BB/PB</th>
                 <th>IMT</th>
                 <th>Status Gizi</th>
             </tr>
@@ -278,7 +283,7 @@
                 $tb_m = $periksa->tinggi_badan / 100;
                 $imt  = $tb_m > 0 ? $periksa->berat_badan / ($tb_m * $tb_m) : 0;
                 $badgeClass = match($periksa->status_gizi) {
-                    'Gizi Baik'   => 'badge-normal',
+                    'Gizi Normal', 'Gizi Baik' => 'badge-normal',
                     'Stunting'    => 'badge-stunting',
                     'Gizi Kurang' => 'badge-kurang',
                     'Gizi Lebih'  => 'badge-lebih',
@@ -294,24 +299,27 @@
                 <td>{{ $periksa->umur_bulan }} Bln</td>
                 <td>{{ $periksa->berat_badan }}</td>
                 <td>{{ $periksa->tinggi_badan }}</td>
+                <td>{{ $periksa->z_bbu !== null ? number_format($periksa->z_bbu, 2) : '—' }}</td>
+                <td>{{ $periksa->z_tbu !== null ? number_format($periksa->z_tbu, 2) : '—' }}</td>
+                <td>{{ $periksa->z_bbpb !== null ? number_format($periksa->z_bbpb, 2) : '—' }}</td>
                 <td>{{ number_format($imt, 1) }}</td>
-                <td class="{{ $badgeClass }}">{{ $periksa->status_gizi }}</td>
+                <td class="{{ $badgeClass }}">{{ \App\Services\StatusGizi::label($periksa->status_gizi) }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="10" class="no-data">Tidak ada data pemeriksaan untuk periode ini.</td>
+                <td colspan="13" class="no-data">Tidak ada data pemeriksaan untuk periode ini.</td>
             </tr>
             @endforelse
         </tbody>
     </table>
 
-    <p class="catatan">* Data diambil dari sistem informasi pemantauan gizi balita posyandu.</p>
+    <p class="catatan">* Angka Z-score berasal dari tabel proyek saat ini dan belum diverifikasi terhadap metode LMS WHO. Hasil bukan diagnosis tenaga kesehatan.</p>
 
     {{-- Tanda Tangan --}}
     <div class="footer">
         <div class="ttd">
             <p class="ttd-label">Kader Posyandu,</p>
-            <div class="ttd-nama">{{ ucfirst(session('user')) }}</div>
+            <div class="ttd-nama">{{ ucfirst(auth()->user()->name) }}</div>
             <div class="ttd-jabatan">Kader Posyandu</div>
         </div>
     </div>

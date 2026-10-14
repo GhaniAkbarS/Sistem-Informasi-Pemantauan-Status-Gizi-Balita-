@@ -80,6 +80,7 @@
 
             {{-- ══ TAB 1: PEMERIKSAAN GIZI ══ --}}
             <div class="tab-pane fade show active p-0" id="periksa" role="tabpanel">
+                <p class="text-muted small px-3 pt-2 mb-0">Z-score dari tabel proyek saat ini belum diverifikasi terhadap metode LMS WHO.</p>
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="fw-bold">Hasil Pemeriksaan — {{ \Carbon\Carbon::create()->month($bulan)->locale('id')->translatedFormat('F') }} {{ $tahun }}</span>
                     <a href="{{ route('laporan.cetak', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
@@ -97,6 +98,9 @@
                                 <th>Umur</th>
                                 <th>BB (kg)</th>
                                 <th>TB (cm)</th>
+                                <th>Z BB/U</th>
+                                <th>Z TB/U</th>
+                                <th>Z BB/PB</th>
                                 <th>IMT</th>
                                 <th>Status Gizi</th>
                             </tr>
@@ -107,7 +111,7 @@
                                 $tb_m = $p->tinggi_badan / 100;
                                 $imt  = $tb_m > 0 ? $p->berat_badan / ($tb_m * $tb_m) : 0;
                                 $badgeColor = match($p->status_gizi) {
-                                    'Gizi Normal' => 'bg-success',
+                                    'Gizi Normal', 'Gizi Baik' => 'bg-success',
                                     'Stunting'    => 'bg-danger',
                                     'Gizi Kurang' => 'bg-warning',
                                     'Gizi Lebih'  => 'bg-orange',
@@ -121,14 +125,17 @@
                                 <td>{{ $p->umur_bulan }} Bln</td>
                                 <td>{{ $p->berat_badan }}</td>
                                 <td>{{ $p->tinggi_badan }}</td>
+                                <td>{{ $p->z_bbu !== null ? number_format($p->z_bbu, 2) : '—' }}</td>
+                                <td>{{ $p->z_tbu !== null ? number_format($p->z_tbu, 2) : '—' }}</td>
+                                <td>{{ $p->z_bbpb !== null ? number_format($p->z_bbpb, 2) : '—' }}</td>
                                 <td>{{ number_format($imt, 1) }}</td>
                                 <td>
                                     <span class="badge {{ $badgeColor }} me-1"></span>
-                                    {{ $p->status_gizi }}
+                                    {{ \App\Services\StatusGizi::label($p->status_gizi) }}
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="8" class="text-center p-4 text-muted">Tidak ada data pemeriksaan untuk periode ini.</td></tr>
+                            <tr><td colspan="11" class="text-center p-4 text-muted">Tidak ada data pemeriksaan untuk periode ini.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

@@ -6,10 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Login - Posyandu</title>
     <link href="{{ asset('tabler/css/tabler.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('tabler/css/sip-theme.css') }}" rel="stylesheet"/>
     <style>
-      @import url('https://rsms.me/inter/inter.css');
       :root {
-        --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        --tblr-font-sans-serif: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, sans-serif;
       }
       body {
         font-feature-settings: "cv03", "cv04", "cv11";

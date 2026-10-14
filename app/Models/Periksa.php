@@ -18,6 +18,9 @@ class Periksa extends Model
         'tinggi_badan',
         'jenis_pengukuran',
         'status_gizi',
+        'z_bbu',
+        'z_tbu',
+        'z_bbpb',
     ];
 
     public function balita()

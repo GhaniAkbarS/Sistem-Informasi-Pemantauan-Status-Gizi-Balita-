@@ -4,12 +4,12 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Register - Posyandu Cendrawasih</title>
+    <title>Register</title>
     <link href="{{ asset('tabler/css/tabler.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('tabler/css/sip-theme.css') }}" rel="stylesheet"/>
     <style>
-      @import url('https://rsms.me/inter/inter.css');
       :root {
-        --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+        --tblr-font-sans-serif: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, sans-serif;
       }
       body {
         font-feature-settings: "cv03", "cv04", "cv11";
@@ -76,17 +76,16 @@
 
               <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
-                <select id="role" name="role"
-                  class="form-select @error('role') is-invalid @enderror" required>
+                <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required>
                   <option value="">Pilih Role</option>
                   <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Posyandu</option>
                   <option value="kader" {{ old('role') == 'kader' ? 'selected' : '' }}>Petugas/kader</option>
-                  <option value="orang_tua" {{ old('role') == 'orang_tua' ? 'selected' : '' }}>Orang Tua</option>
                 </select>
                 @error('role')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
               </div>
+              <p class="text-muted small">Akun orang tua dibuat oleh petugas/kader melalui menu Daftarkan Akun Orang Tua.</p>
 
               <div class="mb-3">
                   <label for="posyandu_id" class="form-label">Posyandu</label>

@@ -2,16 +2,11 @@
 <html lang="id">
 <head>
     @include('includes.meta')
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('sb-admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800" rel="stylesheet">
-    <!-- SB Admin 2 -->
-    <link href="{{ asset('sb-admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
-    <!-- Chart.js -->
-    <script src="{{ asset('sb-admin/vendor/chart.js/Chart.min.js') }}"></script>
+    <link href="{{ asset('tabler/css/tabler.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('tabler/css/sip-theme.css') }}" rel="stylesheet">
     <title>Laporan Usability - {{ $sesi->nama_penguji }}</title>
     <style>
-        body { background-color: #f8f9fc; }
+        body { background-color: #fff7fa; }
         .score-circle {
             width: 140px; height: 140px;
             border-radius: 50%;
@@ -29,7 +24,7 @@
             gap: 0.35rem; align-items: center;
         }
         .nav-node {
-            background: #eaecf4; color: #4e73df;
+            background: #fde8f0; color: #c2185b;
             padding: 0.2rem 0.65rem; border-radius: 20px;
             font-size: 0.78rem; font-weight: 600;
         }
@@ -310,15 +305,15 @@
     </div>
 </div>
 
-<!-- Bootstrap core JavaScript -->
-<script src="{{ asset('sb-admin/vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('sb-admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('sb-admin/js/sb-admin-2.min.js') }}"></script>
+<script src="{{ asset('tabler/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+<script src="{{ asset('tabler/js/tabler.min.js') }}"></script>
+<script src="{{ asset('tabler/js/sip-chart-compat.js') }}"></script>
+<script src="{{ asset('tabler/js/sip-icons.js') }}"></script>
 
 <script>
-// Set default font agar sesuai SB Admin
+// Setelan lama dibaca oleh jembatan grafik ApexCharts.
 Chart.defaults.global.defaultFontFamily = 'Nunito, -apple-system, system-ui, sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
+Chart.defaults.global.defaultFontColor = '#6d606a';
 
 // Bar Chart - Ringkasan Aktivitas
 var ctx1 = document.getElementById('chartActivity');
@@ -329,8 +324,8 @@ new Chart(ctx1, {
         datasets: [{
             label: 'Jumlah',
             data: [{{ $totalPages }}, {{ $totalClicks }}, {{ $totalError }}, {{ $totalBack }}],
-            backgroundColor: ['#4e73df', '#1cc88a', '#e74a3b', '#f6c23e'],
-            borderColor: ['#3a5fc8', '#17a673', '#be2617', '#dda20a'],
+            backgroundColor: ['#c2185b', '#1cc88a', '#e74a3b', '#f6c23e'],
+            borderColor: ['#9d164c', '#17a673', '#be2617', '#dda20a'],
             borderWidth: 1,
         }]
     },

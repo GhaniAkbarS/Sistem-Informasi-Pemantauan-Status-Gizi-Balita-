@@ -60,17 +60,17 @@ class GiziKalkulator
      */
     private static function tentukanStatus(float $z_bbu, float $z_tbu, float $z_bbpb): string
     {
-        if ($z_tbu < -2) return 'Stunting';
+        if ($z_tbu < -2) return StatusGizi::STUNTING;
 
         // Ambil z-score yang paling negatif (paling menunjukkan kekurangan gizi)
         $z_kurang = min($z_bbu, $z_bbpb);
         // Ambil z-score yang paling positif (paling menunjukkan kelebihan gizi)
         $z_lebih  = max($z_bbu, $z_bbpb);
 
-        if ($z_kurang < -2) return 'Gizi Kurang';   // mencakup juga kasus severely underweight/wasted (< -3)
-        if ($z_lebih > 2)   return 'Gizi Lebih';
+        if ($z_kurang < -2) return StatusGizi::KURANG;   // mencakup juga kasus severely underweight/wasted (< -3)
+        if ($z_lebih > 2)   return StatusGizi::LEBIH;
 
-        return 'Gizi Normal';
+        return StatusGizi::NORMAL;
     }
 
 

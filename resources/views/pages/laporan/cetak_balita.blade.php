@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Data Balita - {{ session('posyandu_nama') }}</title>
+    <link rel="stylesheet" href="{{ asset('tabler/css/tabler.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('tabler/css/sip-theme.css') }}">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family: Arial, sans-serif; font-size: 12px; padding: 30px; }
@@ -11,17 +13,17 @@
         .header h2 { font-size:13px; margin-top:2px; }
         .info-row { display:flex; justify-content:space-between; margin-bottom:16px; }
         table { width:100%; border-collapse:collapse; }
-        thead tr { background:#2c5f8a; color:#fff; }
+        thead tr { background:#c2185b; color:#fff; }
         th, td { border:1px solid #ccc; padding:6px 8px; }
         th { font-size:10px; text-transform:uppercase; }
-        tbody tr:nth-child(even) { background:#f5f8fc; }
+        tbody tr:nth-child(even) { background:#fff7fa; }
         .no-print { margin-bottom:16px; }
         @media print { .no-print { display:none; } body { padding:15px; } }
     </style>
 </head>
 <body>
     <div class="no-print">
-        <button onclick="window.print()" style="padding:8px 20px;background:#2c5f8a;color:#fff;border:none;border-radius:4px;cursor:pointer;">🖨️ Cetak / Simpan PDF</button>
+        <button onclick="window.print()" style="padding:8px 20px;background:#c2185b;color:#fff;border:none;border-radius:4px;cursor:pointer;">🖨️ Cetak / Simpan PDF</button>
         <button onclick="window.close()" style="padding:8px 20px;background:#888;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-left:8px;">✖ Tutup</button>
     </div>
     <div class="header">

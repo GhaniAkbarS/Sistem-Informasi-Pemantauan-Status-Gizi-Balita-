@@ -66,7 +66,7 @@
                                         {{ number_format($imt, 1) }}
                                     </td>
                                     <td>
-                                        <span class="badge {{ $periksa->status_gizi == 'Gizi Normal' ? 'bg-success' : ($periksa->status_gizi == 'Stunting' ? 'bg-danger' : 'bg-warning') }} me-1"></span> {{ $periksa->status_gizi }}
+                                        <span class="badge {{ \App\Services\StatusGizi::label($periksa->status_gizi) == 'Gizi Normal' ? 'bg-success' : ($periksa->status_gizi == 'Stunting' ? 'bg-danger' : 'bg-warning') }} me-1"></span> {{ \App\Services\StatusGizi::label($periksa->status_gizi) }}
                                     </td>
                                     <td class="text-end">
                                          <div class="dropdown">

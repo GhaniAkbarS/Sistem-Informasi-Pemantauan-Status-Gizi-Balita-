@@ -13,6 +13,7 @@ class PosyanduSeeder extends Seeder
     public function run(): void
     {
         \App\Models\Posyandu::insert([
+            ['nama_posyandu' => 'Posyandu Tes', 'alamat' => '-', 'kelurahan' => '-', 'kecamatan' => '-', 'created_at' => now(), 'updated_at' => now()],
             ['nama_posyandu' => 'Posyandu Cendrawasih', 'alamat' => 'Jl. Merdeka No. 1', 'kelurahan' => '-', 'kecamatan' => '-', 'created_at' => now(), 'updated_at' => now()],
             ['nama_posyandu' => 'Posyandu Melati',      'alamat' => 'Jl. Bunga No. 10',   'kelurahan' => '-', 'kecamatan' => '-', 'created_at' => now(), 'updated_at' => now()],
             ['nama_posyandu' => 'Posyandu Mawar',        'alamat' => 'Jl. Kebon Sirih No. 5', 'kelurahan' => '-', 'kecamatan' => '-', 'created_at' => now(), 'updated_at' => now()],
